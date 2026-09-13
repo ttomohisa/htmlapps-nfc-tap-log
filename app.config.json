@@ -1,0 +1,26 @@
+{
+  "$schema": "./schemas/app-config.schema.json",
+  "name": "NFC Tap Log",
+  "nameJa": "NFC Tap Log",
+  "slug": "nfc-tap-log",
+  "version": "1.0.0",
+  "description": "Turn an NFC tag URL into a physical shortcut for local maintenance and routine logs.",
+  "descriptionJa": "NFCタグ用URLを、掃除・交換・点検などのローカル記録を開く物理ショートカットとして使うツールです。",
+  "defaultLanguage": "auto",
+  "repository": {
+    "owner": "ttomohisa",
+    "name": "htmlapps-nfc-tap-log"
+  },
+  "build": {
+    "output": "dist/index.html",
+    "blockRuntimeNetwork": true,
+    "selfExtract": {
+      "enabled": true,
+      "output": "dist/index.self-extract.html"
+    },
+    "sizeBudget": {
+      "readableWarningMb": 25,
+      "selfExtractWarningMb": 12
+    }
+  }
+}
