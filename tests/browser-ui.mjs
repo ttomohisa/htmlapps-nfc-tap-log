@@ -21,7 +21,7 @@ try {
     const page = await context.newPage();
     const errors = [], externalRequests = [];
     page.on('pageerror', error => errors.push(error.message));
-    page.on('request', request => { if (!request.url().startsWith(base) && !request.url().startsWith('data:') && !request.url().startsWith('blob:')) externalRequests.push(request.url()); });
+    page.on('request', request => { if (!request.url().startsWith(base) && !request.url().startsWith('data:') && !request.url().startsWith('blob:') && !request.url().startsWith('file:')) externalRequests.push(request.url()); });
     await page.goto(base, { waitUntil: 'networkidle' });
     await page.locator('#emptyCreateButton').waitFor({ state: 'visible' });
     assert.equal(await page.locator('#versionBadge').textContent(), 'v1.0.1');
@@ -97,11 +97,17 @@ try {
     assert.equal(await page.locator('#helpDialog').isVisible(), false);
     await page.screenshot({ path: `test-results/home-${viewport.width}.png`, fullPage: true });
     assert.deepEqual(errors, []); assert.deepEqual(externalRequests, []);
-    await page.goto(base + '/compressed', { waitUntil: 'networkidle' });
-    await page.locator('#versionBadge').waitFor({ state: 'visible' });
-    assert.equal(await page.locator('#versionBadge').textContent(), 'v1.0.1');
-    assert.deepEqual(errors, []);
-    console.log(`Hardware-free UI passed at ${viewport.width}x${viewport.height}; readable and self-extracting HTML loaded`);
+    for (const url of [base + '/compressed', ...['../dist/index.html', '../nfc-tap-log.html', '../dist/index.self-extract.html'].map(relative => new URL(relative, import.meta.url).href)]) {
+      await page.goto(url, { waitUntil: 'networkidle' });
+      await page.locator('#homeView').waitFor({ state: 'visible' });
+      assert.equal(await page.locator('#versionBadge').textContent(), 'v1.0.1');
+      assert.equal(await page.locator('#globalNotice').isVisible(), false);
+      await page.locator('#helpButton').click();
+      await page.keyboard.press('Escape');
+      assert.equal(await page.locator('#helpDialog').isVisible(), false);
+    }
+    assert.deepEqual(errors, []); assert.deepEqual(externalRequests, []);
+    console.log(`Hardware-free UI passed at ${viewport.width}x${viewport.height}; readable/root/self-extract file:// loaded; no external requests or page errors`);
     await context.close();
   }
 } finally {
