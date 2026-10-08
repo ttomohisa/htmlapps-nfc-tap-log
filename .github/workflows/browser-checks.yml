@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   browser:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v6
@@ -29,7 +29,7 @@ jobs:
       - name: Install pinned browser test tools
         run: |
           npm install --no-save --no-package-lock playwright@1.55.0
-          npx playwright install --with-deps chromium
+          npx playwright install chromium
       - name: Verify manual logging, exports, restore, and narrow layout
         run: node tests/browser-ui.mjs
       - name: Upload browser evidence
