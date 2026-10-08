@@ -230,7 +230,8 @@
     .button.danger { color: var(--danger); }
     .save-status { align-self: center; color: var(--muted); font-size: 12px; }
     .export-row { display: flex; align-items: end; gap: 10px; margin-top: 12px; }
-    .export-field { display: grid; gap: 5px; min-width: min(100%, 320px); }
+    .export-field { display: grid; gap: 5px; min-width: 0; }
+    .export-filenames { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 12px; margin-bottom: 12px; }
     .export-label { color: var(--muted); font-size: 11px; font-weight: 700; }
     .filename-control { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; overflow: hidden; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
     .filename-control:focus-within { border-color: var(--focus); box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus) 20%, transparent); }
@@ -942,6 +943,10 @@
             <div class="data-summary-card"><strong id="dataItemCount">0</strong><span data-i18n="dataItems">アイテム</span></div>
             <div class="data-summary-card"><strong id="dataEventCount">0</strong><span data-i18n="dataEvents">履歴</span></div>
           </div>
+          <div class="export-filenames">
+            <label class="export-field" for="csvFilename"><span class="export-label" data-i18n="csvFilename">CSVファイル名</span><span class="filename-control"><input class="filename-input" id="csvFilename" type="text" maxlength="160" spellcheck="false" autocomplete="off" aria-describedby="csvExtension"><span class="filename-extension" id="csvExtension">.csv</span></span></label>
+            <label class="export-field" for="jsonFilename"><span class="export-label" data-i18n="jsonFilename">バックアップファイル名</span><span class="filename-control"><input class="filename-input" id="jsonFilename" type="text" maxlength="160" spellcheck="false" autocomplete="off" aria-describedby="jsonExtension"><span class="filename-extension" id="jsonExtension">.json</span></span></label>
+          </div>
           <div class="data-actions">
             <button class="button secondary" id="exportCsvButton" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m8 11 4 4 4-4"/><path d="M5 21h14"/></svg><span data-i18n="exportCsv">履歴CSVを保存</span></button>
             <button class="button secondary" id="exportJsonButton" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m8 11 4 4 4-4"/><path d="M5 21h14"/></svg><span data-i18n="exportJson">JSONバックアップを保存</span></button>
@@ -1097,6 +1102,7 @@
             <div class="qr-fallback-copy">
               <strong data-i18n="qrTitle">QRコード</strong>
               <p id="qrPreviewStatus" data-i18n="qrBody">NFCが使えない端末では、このQRコードから同じ記録画面を開けます。</p>
+              <label class="export-field" for="qrFilename"><span class="export-label" data-i18n="qrFilename">QRファイル名</span><span class="filename-control"><input class="filename-input" id="qrFilename" type="text" maxlength="160" spellcheck="false" autocomplete="off" aria-describedby="qrExtension"><span class="filename-extension" id="qrExtension">.png</span></span></label>
               <div class="inline-actions qr-actions">
                 <button class="button secondary" id="saveQrButton" type="button">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg><span data-i18n="saveQr">QRコードを保存</span>
@@ -1341,6 +1347,7 @@
         <li data-i18n="helpStep2">生成されたタグURLをNFCタグへ書くか、QRコードを読み取ると、その物の記録画面を開けます。</li>
         <li data-i18n="helpStep3">実際に作業をしたあと、記録ボタンを押します。URLを開いただけでは記録されません。</li>
       </ol>
+      <p data-i18n="helpExport">CSV・JSON・QR画像は保存前にファイル名を変更できます。拡張子は自動調整されます。CSVの数式対策は元の記録とJSONを変更しません。</p>
       <h3 data-i18n="helpPrivacyTitle">プライバシー</h3>
       <p data-i18n="helpPrivacyBody">アイテムと履歴はこのブラウザー内に保存され、このアプリからサーバーへ送信されません。</p>
       <h3 data-i18n="helpNotesTitle">注意事項</h3>
@@ -2732,6 +2739,8 @@
       const translations = {
         ja: {
           brandMeta: 'NFCタグで、作業履歴を記録',
+          csvFilename: 'CSVファイル名', jsonFilename: 'バックアップファイル名', qrFilename: 'QRファイル名',
+          helpExport: 'CSV・JSON・QR画像は保存前にファイル名を変更できます。拡張子は自動調整されます。CSVでは数式として解釈される文字列の先頭にアポストロフィを付けます。元の記録とJSONは変わりません。',
           helpTitle: '使い方と注意事項', close: '閉じる',
           helpBasicsTitle: '基本操作',
           helpStep1: '「新しいタグ」で、物の名前と「掃除した」などの記録内容を登録します。',
@@ -2763,6 +2772,8 @@
         },
         en: {
           brandMeta: 'Log routine work with NFC tags',
+          csvFilename: 'CSV filename', jsonFilename: 'Backup filename', qrFilename: 'QR filename',
+          helpExport: 'Edit the filename before saving CSV, JSON, or QR images. Extensions are adjusted automatically. CSV text that could be interpreted as a formula receives a leading apostrophe. Original records and JSON backups stay unchanged.',
           helpTitle: 'How to use & notes', close: 'Close',
           helpBasicsTitle: 'Basics', helpStep1: 'Use New tag to register an object and an action such as “Cleaned”.', helpStep2: 'Write the generated URL to an NFC tag or scan its QR code to open the item screen.', helpStep3: 'After doing the real task, press the record button. Opening the URL alone never creates an event.',
           helpPrivacyTitle: 'Privacy', helpPrivacyBody: 'Items and history are stored in this browser and are not sent to a server by this app.', helpNotesTitle: 'Notes', helpNoteStorage: 'Clearing browser site data can remove your records. Use Data management to save a JSON backup of important records.', helpNoteSecret: 'Tag URLs are not secret. Do not put passwords or sensitive information in item/action fields.', helpNoteNfc: 'On a compatible Android browser, the HTTPS version can read and write NFC tags. On iPhone Safari or unsupported browsers, open a prepared URL tag through the OS or scan the QR code instead.', helpOffline: 'The distributed HTML uses no runtime CDN or external API. User record data is processed fully locally.',
@@ -2806,6 +2817,9 @@
       if (!['priority', 'recent', 'updated', 'name'].includes(homeSortMode)) homeSortMode = 'priority';
       let homeSnapshot = { items: [], events: [] };
       let pendingRestore = null;
+      let restoreGeneration = 0;
+      let restoreBusy = false;
+      let qrFilenameItemId = null;
       let recordBusy = false;
       let lastRecordAttemptAt = 0;
       let editingEventId = null;
@@ -2890,9 +2904,10 @@
         document.querySelectorAll('[data-i18n-title]').forEach(el => { el.title = tr(el.dataset.i18nTitle); });
         document.querySelectorAll('[data-i18n-aria-label]').forEach(el => { el.setAttribute('aria-label', tr(el.dataset.i18nAriaLabel)); });
         document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.placeholder = tr(el.dataset.i18nPlaceholder); });
-        $('#languageButton').textContent = language === 'ja' ? 'EN' : '日本語';
-        $('#languageButton').setAttribute('aria-label', language === 'ja' ? '英語に切り替え' : 'Switch to Japanese');
-        document.title = APP_CONFIG.name;
+        $('#languageButton').textContent = language === 'ja' ? 'EN' : 'JA';
+        $('#languageButton').title = language === 'ja' ? '英語に切り替え' : 'Switch to Japanese';
+        $('#languageButton').setAttribute('aria-label', $('#languageButton').title);
+        document.title = language === 'ja' ? (APP_CONFIG.nameJa || APP_CONFIG.name) : APP_CONFIG.name;
         $('#brandName').textContent = APP_CONFIG.name;
         $('#footerName').textContent = APP_CONFIG.name;
         if (currentItem) renderDetail();
@@ -3192,6 +3207,9 @@
       }
       function renderDetail() {
         if (!currentItem) return;
+        if (qrFilenameItemId !== currentItem.id) {
+          qrFilenameItemId = currentItem.id; $('#qrFilename').value = `nfc-tap-log-${currentItem.name}`;
+        }
         const last = currentEvents[0] || null; $('#detailName').textContent = currentItem.name; $('#detailAction').textContent = currentItem.actionLabel; $('#portableBadge').hidden = !portableJustImported && !portableLocalPreferred; $('#portableBadge').textContent = portableLocalPreferred ? tr('portableLocalPreferred') : tr('portableImported');
         $('#lastRecordValue').textContent = last ? formatDate(last.performedAt) : tr('noRecord'); $('#elapsedValue').textContent = last ? elapsedLabel(last.performedAt) : '—'; $('#recordCountValue').textContent = tr('countTimes', { count: currentEvents.length });
         const status = intervalStatus(currentItem, last); $('#intervalStatus').dataset.state = status.state; $('#intervalStatusValue').textContent = status.label; $('#intervalStatusNote').textContent = status.note; $('#intervalStatusBadge').textContent = status.badge; $('#intervalStatusBadge').hidden = !status.badge;
@@ -3632,7 +3650,19 @@
         window.setTimeout(() => URL.revokeObjectURL(url), 1000);
       }
       function safeFileTimestamp(date = new Date()) { return date.toISOString().replace(/[:.]/g, '-'); }
-      function csvCell(value) { const text = value == null ? '' : String(value); return /[",\r\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text; }
+      function safeExportFilename(value, extension, fallback) {
+        let stem = String(value || '').replace(/[\x00-\x1f\x7f]/g, '').replace(/[<>:"/\\|?*]/g, '_').trim();
+        stem = stem.replace(/^[. _]+|[. ]+$/g, '').replace(/\.[A-Za-z0-9]{1,10}$/, '').replace(/[. ]+$/g, '');
+        if (!stem || /^_+$/.test(stem)) stem = fallback;
+        if (/^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i.test(stem)) stem = '_' + stem;
+        return [...stem].slice(0, 120).join('') + '.' + extension;
+      }
+      function csvCell(value) {
+        let text = value == null ? '' : String(value);
+        // Quoting alone does not stop spreadsheet formula interpretation.
+        if (/^[\s\u0000-\u001f]*[=+@-]/.test(text) || /^[\t\r\n]/.test(text)) text = "'" + text;
+        return /[",\r\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
+      }
       async function exportHistoryCsv() {
         try {
           const [items, events] = await Promise.all([getAllItems(), getAllEvents()]);
@@ -3643,7 +3673,7 @@
             const item = itemMap.get(event.itemId) || { name: '', actionLabel: '' };
             rows.push([item.name, item.actionLabel, event.performedAt, event.note || ''].map(csvCell).join(','));
           }
-          downloadBlob(new Blob(['\uFEFF' + rows.join('\r\n') + '\r\n'], { type: 'text/csv;charset=utf-8' }), `nfc-tap-log-history-${new Date().toISOString().slice(0, 10)}.csv`);
+          downloadBlob(new Blob(['\uFEFF' + rows.join('\r\n') + '\r\n'], { type: 'text/csv;charset=utf-8' }), safeExportFilename($('#csvFilename').value, 'csv', 'nfc-tap-log-history'));
           showToast(tr('csvSaved'), { tone: 'success' });
         } catch (error) { console.error('CSV export failed', error); showToast(tr('backupExportFailed'), { tone: 'warning' }); }
       }
@@ -3652,7 +3682,7 @@
         try {
           const [items, events] = await Promise.all([getAllItems(), getAllEvents()]);
           const text = JSON.stringify(createBackupDocument(items, events), null, 2) + '\n';
-          downloadBlob(new Blob([text], { type: 'application/json;charset=utf-8' }), `nfc-tap-log-backup-${safeFileTimestamp()}.json`);
+          downloadBlob(new Blob([text], { type: 'application/json;charset=utf-8' }), safeExportFilename($('#jsonFilename').value, 'json', 'nfc-tap-log-backup'));
           showToast(tr('jsonSaved'), { tone: 'success' });
         } catch (error) { console.error('JSON backup failed', error); showToast(tr('backupExportFailed'), { tone: 'warning' }); }
       }
@@ -3700,33 +3730,48 @@
         $('#restoreError').textContent = '';
       }
       async function loadRestoreFile(file) {
-        if (!file) return;
+        if (!file || restoreBusy) return;
+        closeRestoreDialog();
+        const generation = restoreGeneration;
         if (file.size > 25 * 1024 * 1024) { showToast(tr('restoreFileTooLarge'), { tone: 'warning' }); return; }
         try {
-          const backup = validateBackupDocument(JSON.parse(await file.text()));
+          const text = await file.text();
+          if (generation !== restoreGeneration) return;
+          const backup = validateBackupDocument(JSON.parse(text));
           pendingRestore = { fileName: file.name || 'backup.json', backup };
           $('#restoreModeMerge').checked = true; $('#restoreError').textContent = ''; renderRestorePreview();
-          $('#restoreDialog').showModal(); requestAnimationFrame(() => $('#restoreModeMerge').focus({ preventScroll: true }));
-        } catch (error) { console.error('Backup validation failed', error); pendingRestore = null; showToast(tr('restoreFileInvalid'), { tone: 'warning' }); }
+          $('#restoreDialog').showModal(); requestAnimationFrame(() => { if (generation === restoreGeneration && $('#restoreDialog').open) $('#restoreModeMerge').focus({ preventScroll: true }); });
+        } catch (error) {
+          if (generation !== restoreGeneration) return;
+          console.error('Backup validation failed', error); pendingRestore = null; showToast(tr('restoreFileInvalid'), { tone: 'warning' });
+        }
       }
-      function closeRestoreDialog() { pendingRestore = null; if ($('#restoreDialog').open) $('#restoreDialog').close(); $('#restoreError').textContent = ''; }
+      function closeRestoreDialog() {
+        if (restoreBusy) return;
+        restoreGeneration += 1; pendingRestore = null;
+        if ($('#restoreDialog').open) $('#restoreDialog').close();
+        $('#restoreError').textContent = '';
+      }
       async function applyRestore() {
-        if (!pendingRestore) return;
+        if (!pendingRestore || restoreBusy) return;
+        const restore = pendingRestore;
         const mode = document.querySelector('input[name="restoreMode"]:checked')?.value || 'merge';
-        $('#applyRestoreButton').disabled = true; $('#restoreError').textContent = '';
+        restoreBusy = true;
+        const controlIds = ['#applyRestoreButton', '#closeRestoreButton', '#cancelRestoreButton', '#restoreModeMerge', '#restoreModeReplace'];
+        controlIds.forEach(id => { $(id).disabled = true; }); $('#restoreError').textContent = '';
         try {
           if (mode === 'replace') {
             const confirmed = await AppConfirm.ask({ title: tr('restoreReplaceConfirmTitle'), message: tr('restoreReplaceConfirmBody'), confirmLabel: tr('restoreReplaceConfirm'), tone: 'danger' });
             if (!confirmed) return;
-            await replaceAllRecords(pendingRestore.backup.items, pendingRestore.backup.events);
-            const result = { items: pendingRestore.backup.items.length, events: pendingRestore.backup.events.length };
-            closeRestoreDialog(); homeSearchQuery = ''; await refreshHomeSummary(); showToast(tr('restoreSucceeded', result), { tone: 'success', duration: 4800 });
+            await replaceAllRecords(restore.backup.items, restore.backup.events);
+            const result = { items: restore.backup.items.length, events: restore.backup.events.length };
+            homeSearchQuery = ''; await refreshHomeSummary(); restoreBusy = false; closeRestoreDialog(); showToast(tr('restoreSucceeded', result), { tone: 'success', duration: 4800 });
           } else {
-            const result = await mergeBackupRecords(pendingRestore.backup.items, pendingRestore.backup.events);
-            closeRestoreDialog(); await refreshHomeSummary(); showToast(tr('restoreMerged', { items: result.itemsAdded, events: result.eventsAdded }), { tone: 'success', duration: 4800 });
+            const result = await mergeBackupRecords(restore.backup.items, restore.backup.events);
+            await refreshHomeSummary(); restoreBusy = false; closeRestoreDialog(); showToast(tr('restoreMerged', { items: result.itemsAdded, events: result.eventsAdded }), { tone: 'success', duration: 4800 });
           }
         } catch (error) { console.error('Restore failed', error); $('#restoreError').textContent = tr('restoreFailed'); }
-        finally { $('#applyRestoreButton').disabled = false; }
+        finally { restoreBusy = false; controlIds.forEach(id => { $(id).disabled = false; }); }
       }
       async function deleteAllData() {
         if (!homeSnapshot.items.length && !homeSnapshot.events.length) return;
@@ -3738,10 +3783,11 @@
       async function saveQrCode() {
         if (!currentItem) return;
         try {
+          const filename = safeExportFilename($('#qrFilename').value, 'png', 'nfc-tap-log-qr');
           const canvas = document.createElement('canvas');
           drawQrCanvas(canvas, buildTagUrl(currentItem), { cellSize: 12, marginModules: 4 });
           const blob = await canvasToBlob(canvas);
-          downloadBlob(blob, `nfc-tap-log-${currentItem.id}.png`);
+          downloadBlob(blob, filename);
           showToast(tr('qrSaved'));
         } catch (error) {
           console.error('QR save failed', error);
@@ -3823,6 +3869,8 @@
       }
 
       async function initialize() {
+        $('#csvFilename').value = `nfc-tap-log-history-${new Date().toISOString().slice(0, 10)}`;
+        $('#jsonFilename').value = `nfc-tap-log-backup-${safeFileTimestamp()}`;
         bindUi(); $('#versionBadge').textContent = `v${APP_CONFIG.version}`; $('#buildVersion').textContent = APP_CONFIG.version; $('#builtAt').textContent = BUILD_MANIFEST.generatedAtUtc || '—'; $('#dependencyCount').textContent = String(BUILD_MANIFEST.dependencies?.length || 0); applyLanguage();
         try { db = await openDatabase(); }
         catch (error) { console.error(error); showGlobalError(tr('storageUnavailable')); $('#loadingView').hidden = true; $('#homeView').hidden = false; $('#emptyPanel').hidden = false; $('#emptyCreateButton').disabled = true; return; }

@@ -12,7 +12,7 @@ This file is the first instruction for any coding LLM or agent working in this r
 
 ## Non-negotiable product constraints
 
-- Generate two one-file release variants: readable `dist/index.html` and gzip self-extracting `dist/index.self-extract.html`.
+- Generate two one-file release variants: readable `dist/index.html` and gzip self-extracting `dist/index.self-extract.html`. A normal build must also copy the readable file to the repository root as `<repository-name-without-htmlapps-prefix>.html` (for example `htmlapps-tap-counter` → `tap-counter.html`).
 - Keep `scripts/build-self-extract.ps1` and the generated self-extract loader ASCII-only; encode loader UI text instead of placing non-ASCII literals in that PowerShell source.
 - `assets/favicon.svg` is the canonical app icon source. The readable build must embed that exact SVG for both the browser favicon and the upper-left application brand icon; do not maintain separate icon artwork by hand.
 - The self-extract loader must inherit the embedded favicon from `dist/index.html`; do not maintain a second favicon by hand.
@@ -24,7 +24,7 @@ This file is the first instruction for any coding LLM or agent working in this r
 - Keyboard navigation, visible focus, labels, sufficient contrast, and reduced-motion behavior are required.
 - Japanese and English should live in the same HTML when the app is intended for both languages.
 - Do not use generic emoji as the main interface iconography. Prefer simple inline SVG icons.
-- Do not edit `dist/index.html` or `dist/index.self-extract.html` manually. Edit `src/index.template.html`, config, and build scripts; then rebuild.
+- Do not edit `dist/index.html`, `dist/index.self-extract.html`, or the generated repository-root HTML copy manually. Edit `src/index.template.html`, config, and build scripts; then rebuild.
 
 ## Dependency rules
 

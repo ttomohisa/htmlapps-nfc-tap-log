@@ -3,7 +3,7 @@
 ## 1. Product identity
 
 - **Name:** NFC Tap Log
-- **Version:** v1.0.0
+- **Version:** v1.0.1
 - **Repository:** `ttomohisa/htmlapps-nfc-tap-log`
 - **One-sentence purpose:** Turn a tag URL attached to a physical object into a shortcut for checking the previous maintenance/routine date and recording the next action locally.
 - **Primary users:** Individuals recording lightweight recurring work such as cleaning, replacement, inspection, watering, and replenishment.
@@ -24,14 +24,24 @@ physical object
 
 The tag never stores the event history. History belongs to the local browser database.
 
-## 3. v1.0.0 scope — Stable release
+## 3. v1.0.1 scope — Safer exports and restore
+
+- Keep the v1.0.0 logging and Portable Tag/backup formats compatible.
+- Let users edit CSV, JSON backup, and QR PNG filenames before export. Show the fixed extension separately, remove unsafe path/control characters, normalize extensions, keep Unicode, and fall back to a safe filename when empty.
+- Protect CSV fields against spreadsheet formula interpretation with a leading apostrophe. Do not alter stored values or JSON backups.
+- A newer restore file selection or cancellation invalidates any earlier asynchronous file read. A failed/oversized replacement clears the old restore preview. Repeated Restore clicks must not apply the same operation twice; controls remain locked during restore.
+- Use v1.0.1, EN in Japanese UI / JA in English UI, localized language title/aria and Help, and the existing accurate local-processing badge.
+- Adopt htmlapps-template cb908779682fa315ccd0f1eb58549f6c208f36f0 build/root-HTML behavior and standard Cloudflare PR preview/cleanup using existing repository credentials only.
+- Do not publish this app to the Browser Kitty catalog as part of this change.
+
+### Preserved v1.0.0 stable-release scope
 
 v1.0.0 freezes the core NFC Tap Log workflow as the first stable release. The focus is final regression, release assets, documentation accuracy, and preserving the simple “tap → check previous → record” flow rather than adding another major feature.
 
 Required:
 
 - Keep Portable Tag, local database, backup, NFC, QR, interval, and history formats compatible with v0.9.0.
-- Keep the header version badge at v1.0.0 and use stable product copy rather than release-phase wording.
+- Keep the header version badge at the current app version and use stable product copy rather than release-phase wording.
 - Header metadata must describe the app itself: Japanese `NFCタグで、作業履歴を記録`, English `Log routine work with NFC tags`.
 - Keep general-user privacy text plain; implementation details such as IndexedDB belong in technical documentation rather than primary cards.
 - Preserve mobile bottom-sheet dialogs, fixed record action, safe-area padding, and toast placement from the release candidate.
@@ -40,7 +50,7 @@ Required:
 - Verify NFC unsupported, insecure context, iframe, permission rejection, NFC unavailable, write/read failure, mismatched tag, malformed tag, and cancellation states remain understandable.
 - Verify backup validation, Add/Replace restore, delete-all confirmation, and CSV/JSON exports.
 - Keep README.md and README.ja.md in the established Browser Kitty repository format and include current screenshots.
-- Include `assets/screenshot.png` and `assets/screenshot-en.png` captured from the current v1.0.0 UI with no modal or error state left open.
+- Include `assets/screenshot.png` and `assets/screenshot-en.png` captured from the current UI with no modal or error state left open.
 - Keep `connect-src 'none'`, no analytics/telemetry, and no runtime CDN/API dependencies.
 - Produce and verify both readable and self-extracting single-HTML artifacts.
 
@@ -312,3 +322,9 @@ All file parsing, export generation, validation, and IndexedDB writes happen loc
 - Both standalone artifacts build and verify.
 - Generated HTML has no unresolved placeholders or runtime external resources.
 - Static checks must confirm the reader uses `NDEFReader.scan({ signal })`, handles `reading` and `readingerror`, never navigates arbitrary scanned URLs, compares all Portable Tag fields during verification, and generates QR codes from the same `buildTagUrl()` value used by NFC.
+
+## 19. Automated and hardware-free checks
+
+Run the PowerShell preflight and `scripts/check-repository.ps1`; the latter includes `node --test tests/app-regressions.test.cjs` and both single-HTML builds. A normal build also emits `nfc-tap-log.html` at the repository root.
+
+The cloud browser can verify manual creation, history recording, Undo, custom filename CSV/JSON/QR exports, synthetic backup validation/restore, reload persistence, language switching, and Help. Real NFC reading, tag writing, read-back verification, and Android/iPhone hardware behavior require physical devices and are NOT RUN by cloud-browser checks. No NFC permission or tag-write request is needed for the hardware-free path.

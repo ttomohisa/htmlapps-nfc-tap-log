@@ -1,0 +1,46 @@
+{
+  "formatVersion": 1,
+  "app": {
+    "slug": "nfc-tap-log",
+    "version": "1.0.0"
+  },
+  "exportedAt": "2026-10-08T00:00:00.000Z",
+  "items": [
+    {
+      "id": "fixture_item01",
+      "name": "=1+1",
+      "actionLabel": "掃除した",
+      "intervalDays": 7,
+      "memo": "Synthetic NFC-free QA fixture",
+      "createdAt": "2026-10-08T00:00:00.000Z",
+      "updatedAt": "2026-10-08T00:00:00.000Z"
+    },
+    {
+      "id": "fixture_item02",
+      "name": "Kitchen filter",
+      "actionLabel": "Replaced",
+      "intervalDays": 30,
+      "memo": "Synthetic fixture only",
+      "createdAt": "2026-10-08T00:00:00.000Z",
+      "updatedAt": "2026-10-08T00:00:00.000Z"
+    }
+  ],
+  "events": [
+    {
+      "id": "fixture_event01",
+      "itemId": "fixture_item01",
+      "performedAt": "2026-10-08T00:00:00.000Z",
+      "note": "+SUM(A1)",
+      "source": "manual",
+      "createdAt": "2026-10-08T00:00:00.000Z"
+    },
+    {
+      "id": "fixture_event02",
+      "itemId": "fixture_item02",
+      "performedAt": "2026-10-08T00:00:00.000Z",
+      "note": "Synthetic record",
+      "source": "manual",
+      "createdAt": "2026-10-08T00:00:00.000Z"
+    }
+  ]
+}

@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.1] - 2026-10-08
+
+- Add editable, sanitized filenames for CSV, JSON backup, and QR PNG exports.
+- Neutralize spreadsheet-formula prefixes in CSV while preserving original logs and JSON.
+- Prevent stale backup reads from replacing newer selections and prevent repeated restore submissions.
+- Normalize header language controls and update bilingual Help.
+- Adopt template cb908779 build/root-HTML behavior and standard Cloudflare PR preview/cleanup.
+- Add dependency-free regression tests for exports, restore races, and header contracts.
+
 ## [1.0.0] - 2026-09-14
 
 ### Changed
