@@ -216,3 +216,11 @@ test('A pending summary refresh cannot unlock a later restore write', async () =
   finishSecondWrite(); await second;
   assert.equal($('#applyRestoreButton').disabled, false);
 });
+
+test('Header fallback version and touch targets match the release on narrow screens', () => {
+  const config = JSON.parse(fs.readFileSync(path.join(__dirname, '../app.config.json'), 'utf8'));
+  assert.ok(source.includes(`id="versionBadge">v${config.version}</span>`));
+  assert.match(source, /\.language-button\s*\{[^}]*min-width:\s*44px;[^}]*min-height:\s*44px;/);
+  assert.match(source, /\.header-icon-button\s*\{[^}]*min-width:\s*44px;[^}]*min-height:\s*44px;/);
+  assert.match(source, /@media \(max-width: 420px\)\s*\{\s*\.version-badge\s*\{[^}]*display:\s*table/);
+});

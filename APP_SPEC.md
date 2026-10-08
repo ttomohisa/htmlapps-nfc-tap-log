@@ -328,3 +328,5 @@ All file parsing, export generation, validation, and IndexedDB writes happen loc
 Run the PowerShell preflight and `scripts/check-repository.ps1`; the latter includes `node --test tests/app-regressions.test.cjs` and both single-HTML builds. A normal build also emits `nfc-tap-log.html` at the repository root.
 
 The cloud browser can verify manual creation, history recording, Undo, custom filename CSV/JSON/QR exports, synthetic backup validation/restore, reload persistence, language switching, and Help. Real NFC reading, tag writing, read-back verification, and Android/iPhone hardware behavior require physical devices and are NOT RUN by cloud-browser checks. No NFC permission or tag-write request is needed for the hardware-free path.
+
+The read-only `browser-checks.yml` CI job installs pinned Playwright 1.55.0 and exercises normal controls with synthetic data at Chromium viewports 1280×900 and 320×640. This is emulated layout coverage, not a physical mobile/NFC test. It does not request NFC/camera/microphone permissions. Header language/Help targets are at least 44px; narrow headers put the version badge on its own line.
