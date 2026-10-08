@@ -162,3 +162,14 @@ Bug reports and feature proposals are welcome through GitHub Issues. See [CONTRI
 Copyright © 2026 ttomohisa
 
 Licensed under the [MIT License](LICENSE).
+
+## v1.0.1 export and restore improvements
+
+- Edit the CSV, JSON backup, or QR PNG filename before saving. The format extension stays visible and is normalized automatically; unsafe filename characters are removed or replaced.
+- CSV fields that look like spreadsheet formulas are prefixed with an apostrophe. Your records and JSON backups keep their original text.
+- Selecting another backup or canceling restore invalidates older file reads. Repeated Restore clicks cannot submit the same operation twice.
+- Japanese UI shows EN; English UI shows JA. Both controls include localized accessible labels.
+
+Development now follows htmlapps-template `cb908779`: `scripts/check-repository.ps1` runs dependency-free Node regression tests, builds both variants, and creates the matching repository-root `nfc-tap-log.html`. Node 24 and PowerShell are required for repository checks. Standard Cloudflare PR previews and cleanup reuse the existing `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` repository secrets; missing credentials cause a documented skip. This does not publish a Browser Kitty catalog entry.
+
+Manual logging, backup, CSV, and QR workflows can be checked without NFC hardware. Real NFC reads/writes and physical-device verification are not covered by these cloud checks.

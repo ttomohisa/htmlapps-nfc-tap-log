@@ -81,3 +81,7 @@ JSON backup files are untrusted local input. v1.0.0 validates the whole backup b
 - Replace mode requires an additional destructive confirmation before clearing object stores.
 - Backup contents are never uploaded or sent through `fetch`, XHR, WebSocket, or another external API.
 - CSV is export-only and cannot mutate application state.
+
+## CSV export and backup selection
+
+CSV formula-like values are prefixed with an apostrophe on export only, including whitespace-prefixed formulas. JSON backup values remain unchanged. Export filenames remove path separators, control characters, and unsafe filename characters and normalize fixed extensions. Selecting a new backup or canceling invalidates older pending reads; restore locks its controls while writing.

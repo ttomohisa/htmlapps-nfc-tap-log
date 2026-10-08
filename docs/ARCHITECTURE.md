@@ -110,3 +110,7 @@ Keep source in one HTML while it remains understandable. When an app grows subst
 - No runtime external resource.
 - Clear state ownership.
 - A build that fails on missing input.
+
+## Template modernization (v1.0.1)
+
+Build/root HTML and Cloudflare PR preview/cleanup follow htmlapps-template cb908779682fa315ccd0f1eb58549f6c208f36f0. Existing runtime/component sources remain app-specific and no new runtime dependency is added. `nfc-tap-log.html` is a generated exact copy of `dist/index.html`. The check script also runs dependency-free Node tests. Restore file reads use a generation counter, while restore writes capture their validated document and prevent reentry.

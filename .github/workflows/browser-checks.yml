@@ -1,0 +1,42 @@
+name: Verify hardware-free browser workflows
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "scripts/**"
+      - "app.config.json"
+      - "build-standalone.ps1"
+      - ".github/workflows/browser-checks.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  browser:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - name: Build and verify standalone HTML
+        shell: pwsh
+        run: ./scripts/check-repository.ps1
+      - name: Install pinned browser test tools
+        run: |
+          npm install --no-save --no-package-lock playwright@1.55.0
+          npx playwright install chromium
+      - name: Verify manual logging, exports, restore, and narrow layout
+        run: node tests/browser-ui.mjs
+      - name: Upload browser evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: nfc-tap-log-browser-${{ github.event.pull_request.head.sha }}
+          path: test-results/
+          if-no-files-found: warn
+          retention-days: 14
