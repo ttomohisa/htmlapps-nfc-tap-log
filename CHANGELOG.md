@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2] - 2026-10-11
+
+- Keep the background page still while a native modal is open.
+- Keep Close visible in short Item Edit, Event Edit, and confirmation dialogs while their full-size contents and action buttons scroll together.
+- Preserve the working Help layout, existing shield badge, cancellation/focus behavior, and NFC/data/export/restore handlers.
+- Update Japanese/English Help and documentation, synchronize the confirmation snippet, and check the modal contract in source and every shipped HTML form.
+
 ## [1.0.1] - 2026-10-08
 
 - Add editable, sanitized filenames for CSV, JSON backup, and QR PNG exports.

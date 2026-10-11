@@ -163,6 +163,10 @@ Copyright © 2026 ttomohisa
 
 Licensed under the [MIT License](LICENSE).
 
+## v1.0.2 short-screen dialogs
+
+Edit and confirmation dialogs keep Close visible while their contents and action buttons scroll inside the dialog. The background page stays still while any modal is open. The local-processing badge retains its shield. NFC, saved records, exports, and restore behavior are unchanged.
+
 ## v1.0.1 export and restore improvements
 
 - Edit the CSV, JSON backup, or QR PNG filename before saving. The format extension stays visible and is normalized automatically; unsafe filename characters are removed or replaced.

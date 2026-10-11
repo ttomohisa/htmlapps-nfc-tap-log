@@ -5,6 +5,7 @@ import { readFile, mkdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 
+const appConfig = JSON.parse(await readFile(new URL('../app.config.json', import.meta.url), 'utf8'));
 const readable = await readFile(new URL('../dist/index.html', import.meta.url));
 const compressed = await readFile(new URL('../dist/index.self-extract.html', import.meta.url));
 const server = http.createServer((request, response) => {
@@ -24,7 +25,7 @@ try {
     page.on('request', request => { if (!request.url().startsWith(base) && !request.url().startsWith('data:') && !request.url().startsWith('blob:') && !request.url().startsWith('file:')) externalRequests.push(request.url()); });
     await page.goto(base, { waitUntil: 'networkidle' });
     await page.locator('#emptyCreateButton').waitFor({ state: 'visible' });
-    assert.equal(await page.locator('#versionBadge').textContent(), 'v1.0.1');
+    assert.equal(await page.locator('#versionBadge').textContent(), `v${appConfig.version}`);
     const geometry = await page.evaluate(() => {
       const badge = document.querySelector('#versionBadge').getBoundingClientRect();
       const brand = document.querySelector('.brand-copy').getBoundingClientRect();
@@ -100,7 +101,7 @@ try {
     for (const url of [base + '/compressed', ...['../dist/index.html', '../nfc-tap-log.html', '../dist/index.self-extract.html'].map(relative => new URL(relative, import.meta.url).href)]) {
       await page.goto(url, { waitUntil: 'networkidle' });
       await page.locator('#homeView').waitFor({ state: 'visible' });
-      assert.equal(await page.locator('#versionBadge').textContent(), 'v1.0.1');
+      assert.equal(await page.locator('#versionBadge').textContent(), `v${appConfig.version}`);
       assert.equal(await page.locator('#globalNotice').isVisible(), false);
       await page.locator('#helpButton').click();
       await page.keyboard.press('Escape');

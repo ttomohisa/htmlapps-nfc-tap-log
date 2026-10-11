@@ -303,3 +303,13 @@ if (-not $webrtcReadyText.Contains("options.requireReadyChannelOpen!==false&&(!r
 # Application regressions use Node's built-in test runner, without npm packages.
 & node --test (Join-Path $Root "tests/app-regressions.test.cjs")
 if ($LASTEXITCODE -ne 0) { throw "NFC Tap Log regression tests failed." }
+
+# Verify the modal layout contract in source, readable, root, and self-extracted HTML.
+$previousDialogArtifactCheck = $env:VERIFY_DIALOG_ARTIFACTS
+try {
+  $env:VERIFY_DIALOG_ARTIFACTS = "1"
+  & node --test (Join-Path $Root "tests/dialog-layout.test.cjs")
+  if ($LASTEXITCODE -ne 0) { throw "NFC Tap Log dialog layout regressions failed." }
+} finally {
+  $env:VERIFY_DIALOG_ARTIFACTS = $previousDialogArtifactCheck
+}

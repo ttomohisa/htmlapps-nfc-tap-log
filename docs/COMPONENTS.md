@@ -32,7 +32,8 @@ See [WebRTC QR Pairing Component](WEBRTC_QR_PAIRING.md) for the complete integra
 
 - Centered modal on desktop
 - Bottom-sheet presentation on smartphones
-- Safe-area aware
+- Safe-area aware, with a viewport-bounded shell and a fixed header above one scrollable message/actions body
+- Locks background scrolling only while a native modal is open; cancelling the last modal releases the lock
 - Cancel with `Esc`, the close button, or a backdrop tap
 - Restores focus to the previous control
 - `tone: 'danger'` for destructive actions
