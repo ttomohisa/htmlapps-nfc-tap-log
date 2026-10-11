@@ -287,8 +287,8 @@
       flex-direction: column;
       max-height: calc(100dvh - 28px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
     }
-    /* Keep the whole form, including actions, in one scroll region below Close. */
-    #itemEditDialog[open], #eventEditDialog[open] { display: flex; flex-direction: column; }
+    /* Keep edit forms and the restore body, including actions, in one scroll region below Close. */
+    #itemEditDialog[open], #eventEditDialog[open], #restoreDialog[open] { display: flex; flex-direction: column; }
     #itemEditForm, #eventEditForm {
       min-height: 0; flex: 1 1 auto; overflow: auto;
       overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
@@ -1370,7 +1370,7 @@
         <li data-i18n="helpStep3">実際に作業をしたあと、記録ボタンを押します。URLを開いただけでは記録されません。</li>
       </ol>
       <p data-i18n="helpExport">CSV・JSON・QR画像は保存前にファイル名を変更できます。拡張子は自動調整されます。CSVの数式対策は元の記録とJSONを変更しません。</p>
-      <p data-i18n="helpDialogLayout">画面が低いときは、編集画面や確認画面の中をスクロールすると下のボタンに移動できます。上部の閉じるボタンは表示されたままで、開いている間は背景ページがスクロールしません。</p>
+      <p data-i18n="helpDialogLayout">画面が低いときは、編集・復元・確認画面の中をスクロールすると下のボタンに移動できます。上部の閉じるボタンは表示されたままで、開いている間は背景ページがスクロールしません。</p>
       <h3 data-i18n="helpPrivacyTitle">プライバシー</h3>
       <p data-i18n="helpPrivacyBody">アイテムと履歴はこのブラウザー内に保存され、このアプリからサーバーへ送信されません。</p>
       <h3 data-i18n="helpNotesTitle">注意事項</h3>
@@ -2764,7 +2764,7 @@
           brandMeta: 'NFCタグで、作業履歴を記録',
           csvFilename: 'CSVファイル名', jsonFilename: 'バックアップファイル名', qrFilename: 'QRファイル名',
           helpExport: 'CSV・JSON・QR画像は保存前にファイル名を変更できます。拡張子は自動調整されます。CSVでは数式として解釈される文字列の先頭にアポストロフィを付けます。元の記録とJSONは変わりません。',
-          helpDialogLayout: '画面が低いときは、編集画面や確認画面の中をスクロールすると下のボタンに移動できます。上部の閉じるボタンは表示されたままで、開いている間は背景ページがスクロールしません。',
+          helpDialogLayout: '画面が低いときは、編集・復元・確認画面の中をスクロールすると下のボタンに移動できます。上部の閉じるボタンは表示されたままで、開いている間は背景ページがスクロールしません。',
           helpTitle: '使い方と注意事項', close: '閉じる',
           helpBasicsTitle: '基本操作',
           helpStep1: '「新しいタグ」で、物の名前と「掃除した」などの記録内容を登録します。',
@@ -2799,7 +2799,7 @@
           csvFilename: 'CSV filename', jsonFilename: 'Backup filename', qrFilename: 'QR filename',
           helpExport: 'Edit the filename before saving CSV, JSON, or QR images. Extensions are adjusted automatically. CSV text that could be interpreted as a formula receives a leading apostrophe. Original records and JSON backups stay unchanged.',
           helpTitle: 'How to use & notes', close: 'Close',
-          helpDialogLayout: 'On short screens, scroll inside edit or confirmation dialogs to reach the lower buttons. The Close button stays at the top, and the background page stays still while a modal is open.',
+          helpDialogLayout: 'On short screens, scroll inside edit, restore, or confirmation dialogs to reach the lower buttons. The Close button stays at the top, and the background page stays still while a modal is open.',
           helpBasicsTitle: 'Basics', helpStep1: 'Use New tag to register an object and an action such as “Cleaned”.', helpStep2: 'Write the generated URL to an NFC tag or scan its QR code to open the item screen.', helpStep3: 'After doing the real task, press the record button. Opening the URL alone never creates an event.',
           helpPrivacyTitle: 'Privacy', helpPrivacyBody: 'Items and history are stored in this browser and are not sent to a server by this app.', helpNotesTitle: 'Notes', helpNoteStorage: 'Clearing browser site data can remove your records. Use Data management to save a JSON backup of important records.', helpNoteSecret: 'Tag URLs are not secret. Do not put passwords or sensitive information in item/action fields.', helpNoteNfc: 'On a compatible Android browser, the HTTPS version can read and write NFC tags. On iPhone Safari or unsupported browsers, open a prepared URL tag through the OS or scan the QR code instead.', helpOffline: 'The distributed HTML uses no runtime CDN or external API. User record data is processed fully locally.',
           introTitle: 'Tap the object, check the previous time, record the action', lead: 'Open cleaning, replacement, inspection and other logs from a tag URL dedicated to that physical object.', localBadge: 'Fully local processing',

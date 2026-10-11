@@ -85,6 +85,31 @@ for (const [label, html] of artifacts) {
       assert.equal(property(html, `#${form} .form-actions`, 'position'), undefined, 'actions must not consume a fixed footer');
     });
   }
+  test(`${label}: Restore keeps Close above one scrollable preview, mode, and actions body`, () => {
+    assert.equal(property(html, '#restoreDialog[open]', 'display'), 'flex', 'Restore must allocate a scrollable body below its fixed header');
+    assert.equal(property(html, '#restoreDialog[open]', 'flex-direction'), 'column');
+    assert.match(property(html, 'dialog', 'max-height'), /100dvh/);
+    assert.match(property(html, 'dialog:not(.app-confirm-dialog)', 'max-height'), /safe-area-inset-top/);
+    assert.equal(property(html, '.dialog-header', 'flex'), '0 0 auto');
+    assert.equal(property(html, '.dialog-body', 'min-height'), '0');
+    assert.equal(property(html, '.dialog-body', 'flex'), '1 1 auto');
+    assert.equal(property(html, '.dialog-body', 'overflow'), 'auto');
+    assert.equal(property(html, '.dialog-body', 'overscroll-behavior'), 'contain');
+    assert.match(property(html, '.dialog-body', 'padding'), /safe-area-inset-bottom/);
+    const markup = html.match(/<dialog id="restoreDialog"[\s\S]*?<\/dialog>/)?.[0];
+    assert.ok(markup);
+    assert.equal([...markup.matchAll(/class="dialog-body"/g)].length, 1, 'Restore keeps one scroll region');
+    assert.ok(markup.indexOf('id="closeRestoreButton"') < markup.indexOf('<div class="dialog-body">'));
+    const body = markup.match(/<div class="dialog-body">([\s\S]*)<\/div>\s*<\/dialog>/)?.[1];
+    assert.ok(body);
+    for (const id of ['restoreFileName', 'restoreItemCount', 'restoreEventCount', 'restoreModeMerge', 'restoreModeReplace', 'restoreError', 'cancelRestoreButton', 'applyRestoreButton']) {
+      assert.ok(body.includes(`id="${id}"`), `${id} stays in the scrolling body`);
+    }
+    assert.doesNotMatch(body, /id="closeRestoreButton"/);
+    assert.match(body, /id="restoreModeMerge"[^>]*value="merge"[^>]*checked/);
+    for (const id of ['cancelRestoreButton', 'applyRestoreButton']) assert.match(body, new RegExp(`id="${id}"[^>]*type="button"`));
+    assert.equal(property(html, '#restoreDialog .form-actions', 'position'), undefined, 'Restore actions must not consume a fixed footer');
+  });
   test(`${label}: generic confirmation retains a fixed header and scrollable message/actions`, () => confirmationContract(html));
   test(`${label}: working Help shell and existing shield remain intact`, () => {
     assert.equal(property(html, '#helpDialog[open]', 'display'), 'flex');

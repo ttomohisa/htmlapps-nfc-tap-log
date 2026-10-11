@@ -165,7 +165,7 @@ Licensed under the [MIT License](LICENSE).
 
 ## v1.0.2 short-screen dialogs
 
-Edit and confirmation dialogs keep Close visible while their contents and action buttons scroll inside the dialog. The background page stays still while any modal is open. The local-processing badge retains its shield. NFC, saved records, exports, and restore behavior are unchanged.
+Edit, restore, and confirmation dialogs keep Close visible while their contents and action buttons scroll inside the dialog. The background page stays still while any modal is open. The local-processing badge retains its shield. NFC, saved records, exports, and restore data handling are unchanged.
 
 ## v1.0.1 export and restore improvements
 

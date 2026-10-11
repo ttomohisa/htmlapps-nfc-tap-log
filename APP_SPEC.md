@@ -27,10 +27,10 @@ The tag never stores the event history. History belongs to the local browser dat
 ## 3. v1.0.2 scope — Reachable short-screen dialogs
 
 - Lock both document roots only while a native modal is open; closing the last modal restores normal page scrolling.
-- Keep the working Help header/body layout. Item Edit and Event Edit keep Close above one scrollable form, with full-height fields and actions in the same scroll flow. Do not reserve a fixed three-button footer.
+- Keep the working Help header/body layout. Item Edit and Event Edit keep Close above one scrollable form, with full-height fields and actions in the same scroll flow. Restore uses the same fixed-header shell with its existing preview, mode choices, and actions in one scrollable body. Do not reserve a fixed three-button footer.
 - Bound generic confirmation to the viewport, with a nonshrinking header and one scrollable message/actions body; retain mobile safe-area padding.
 - Preserve dialog cancellation, focus restoration, NFC/data/export/restore handlers, and the existing shield badge.
-- At desktop and JA/EN 393×252, verify Close remains visible after scrolling/Tab, every field and action can be reached, background wheel does not scroll the page, and cancellation preserves the synthetic item/history. These UI checks do not verify physical NFC or a mobile keyboard.
+- At desktop and JA/EN 393×252, verify Close remains visible after scrolling/Tab, every field and action can be reached, background wheel does not scroll the page, and cancellation preserves the synthetic item/history. For Restore, load a valid synthetic backup, keep the default Add mode, reach Cancel and Restore by Tab, then cancel without applying; the existing item/history must remain unchanged. These UI checks do not verify physical NFC or a mobile keyboard.
 
 ### Preserved v1.0.1 scope — Safer exports and restore
 
