@@ -3,7 +3,7 @@
 ## 1. Product identity
 
 - **Name:** NFC Tap Log
-- **Version:** v1.0.1
+- **Version:** v1.0.2
 - **Repository:** `ttomohisa/htmlapps-nfc-tap-log`
 - **One-sentence purpose:** Turn a tag URL attached to a physical object into a shortcut for checking the previous maintenance/routine date and recording the next action locally.
 - **Primary users:** Individuals recording lightweight recurring work such as cleaning, replacement, inspection, watering, and replenishment.
@@ -24,7 +24,15 @@ physical object
 
 The tag never stores the event history. History belongs to the local browser database.
 
-## 3. v1.0.1 scope — Safer exports and restore
+## 3. v1.0.2 scope — Reachable short-screen dialogs
+
+- Lock both document roots only while a native modal is open; closing the last modal restores normal page scrolling.
+- Keep the working Help header/body layout. Item Edit and Event Edit keep Close above one scrollable form, with full-height fields and actions in the same scroll flow. Restore uses the same fixed-header shell with its existing preview, mode choices, and actions in one scrollable body. Do not reserve a fixed three-button footer.
+- Bound generic confirmation to the viewport, with a nonshrinking header and one scrollable message/actions body; retain mobile safe-area padding.
+- Preserve dialog cancellation, focus restoration, NFC/data/export/restore handlers, and the existing shield badge.
+- At desktop and JA/EN 393×252, verify Close remains visible after scrolling/Tab, every field and action can be reached, background wheel does not scroll the page, and cancellation preserves the synthetic item/history. For Restore, load a valid synthetic backup, keep the default Add mode, reach Cancel and Restore by Tab, then cancel without applying; the existing item/history must remain unchanged. These UI checks do not verify physical NFC or a mobile keyboard.
+
+### Preserved v1.0.1 scope — Safer exports and restore
 
 - Keep the v1.0.0 logging and Portable Tag/backup formats compatible.
 - Let users edit CSV, JSON backup, and QR PNG filenames before export. Show the fixed extension separately, remove unsafe path/control characters, normalize extensions, keep Unicode, and fall back to a safe filename when empty.
@@ -325,7 +333,7 @@ All file parsing, export generation, validation, and IndexedDB writes happen loc
 
 ## 19. Automated and hardware-free checks
 
-Run the PowerShell preflight and `scripts/check-repository.ps1`; the latter includes `node --test tests/app-regressions.test.cjs` and both single-HTML builds. A normal build also emits `nfc-tap-log.html` at the repository root.
+Run the PowerShell preflight and `scripts/check-repository.ps1`; the latter includes `node --test tests/app-regressions.test.cjs`, `tests/dialog-layout.test.cjs` for source/readable/root/self-extracted HTML, and both single-HTML builds. A normal build also emits `nfc-tap-log.html` at the repository root.
 
 The cloud browser can verify manual creation, history recording, Undo, custom filename CSV/JSON/QR exports, synthetic backup validation/restore, reload persistence, language switching, and Help. Real NFC reading, tag writing, read-back verification, and Android/iPhone hardware behavior require physical devices and are NOT RUN by cloud-browser checks. No NFC permission or tag-write request is needed for the hardware-free path.
 
