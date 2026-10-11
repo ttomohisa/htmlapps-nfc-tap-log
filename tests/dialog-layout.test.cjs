@@ -121,12 +121,12 @@ for (const [label, html] of artifacts) {
 }
 
 test('canonical confirmation snippet keeps the same bounded scroll contract', () => confirmationContract(read('components/confirm-dialog.html')));
-test('patch metadata and bilingual Help explain the short-dialog controls', () => {
+test('patch metadata is preserved and Help omits layout audit prose', () => {
   const html = artifacts[0][1];
   assert.equal(JSON.parse(read('app.config.json')).version, '1.0.2');
   assert.match(html, /id="versionBadge">v1\.0\.2<\/span>/);
-  assert.equal([...html.matchAll(/data-i18n="helpDialogLayout"/g)].length, 1);
-  assert.equal([...html.matchAll(/helpDialogLayout:\s*'/g)].length, 2);
+  assert.equal([...html.matchAll(/data-i18n="helpDialogLayout"/g)].length, 0);
+  assert.equal([...html.matchAll(/helpDialogLayout:\s*'/g)].length, 0);
 });
 test('repository check explicitly verifies source and every shipped dialog form', () => {
   const check = read('scripts/check-repository.ps1');
