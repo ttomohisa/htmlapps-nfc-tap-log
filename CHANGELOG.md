@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Hide the phone informational footer and place existing build metadata at the end of Help, preserving functional controls and keyboard access.
+
+
 - Clarify Japanese and English help by removing internal layout, implementation, and audit commentary while preserving usage guidance and cautions.
 
 ## [1.0.2] - 2026-10-11
