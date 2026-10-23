@@ -828,6 +828,9 @@
       .qr-print-meta strong { font-size: 11pt; }
       .qr-print-card small { font-size: 8pt; color: #555; }
     }
+  @media (max-width: 720px) { body > footer { display: none; } }
+    #helpDialog .help-build { margin-top:20px; padding-top:12px; border-top:1px solid var(--line); color:var(--muted); font-size:11px; overflow-wrap:anywhere; }
+    #helpDialog .help-build .build-grid { grid-template-columns:minmax(0,1fr); }
 </style>
 </head>
 <body>
@@ -1159,16 +1162,7 @@
     </section>
     <!-- APP:END -->
 
-    <section class="build-details">
-      <details>
-        <summary data-i18n="buildInfo">ビルド情報</summary>
-        <div class="build-grid">
-          <div class="build-item"><span data-i18n="appVersion">アプリバージョン</span><strong id="buildVersion">—</strong></div>
-          <div class="build-item"><span data-i18n="builtAt">生成日時</span><strong id="builtAt">—</strong></div>
-          <div class="build-item"><span data-i18n="dependencies">内包依存数</span><strong id="dependencyCount">0</strong></div>
-        </div>
-      </details>
-    </section>
+
   </main>
 
   <section class="qr-print-sheet" id="qrPrintSheet" aria-hidden="true">
@@ -1380,6 +1374,14 @@
       </ul>
       <p class="dialog-note" data-i18n="helpOffline">配布HTMLは実行時CDNや外部APIを使いません。ユーザーの記録データは完全ローカル処理です。</p>
       <!-- APP:HELP:END -->
+      <section class="help-build"><details>
+        <summary data-i18n="buildInfo">ビルド情報</summary>
+        <div class="build-grid">
+          <div class="build-item"><span data-i18n="appVersion">アプリバージョン</span><strong id="buildVersion">—</strong></div>
+          <div class="build-item"><span data-i18n="builtAt">生成日時</span><strong id="builtAt">—</strong></div>
+          <div class="build-item"><span data-i18n="dependencies">内包依存数</span><strong id="dependencyCount">0</strong></div>
+        </div>
+      </details></section>
     </div>
   </dialog>
 
@@ -3859,7 +3861,7 @@
       function bindUi() {
         window.addEventListener('afterprint', clearPrintMode);
         $('#languageButton').addEventListener('click', () => { language = language === 'ja' ? 'en' : 'ja'; writeStorage(storageKeys.language, language); applyLanguage(); });
-        const helpDialog = $('#helpDialog'); $('#helpButton').addEventListener('click', () => helpDialog.showModal()); $('#closeHelpButton').addEventListener('click', () => helpDialog.close()); helpDialog.addEventListener('click', event => { const rect = helpDialog.getBoundingClientRect(); if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) helpDialog.close(); });
+        const helpDialog = $('#helpDialog'); $('#helpButton').addEventListener('click', () => helpDialog.showModal()); $('#closeHelpButton').addEventListener('click', () => helpDialog.close()); helpDialog.addEventListener('click', event => { if (event.target !== event.currentTarget) return; const rect = helpDialog.getBoundingClientRect(); if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) helpDialog.close(); });
         $('#emptyCreateButton').addEventListener('click', () => { resetCreateForm(); showView('create'); $('#itemName').focus(); });
         $('#emptyNfcReadButton').addEventListener('click', () => openNfcReadDialog({ mode: 'open' }));
         $('#nfcReadButton').addEventListener('click', () => openNfcReadDialog({ mode: 'open' }));
