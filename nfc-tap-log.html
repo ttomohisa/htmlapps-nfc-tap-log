@@ -95,7 +95,7 @@
       border-radius: 999px;
       color: var(--muted);
       background: var(--surface-muted);
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 650;
       vertical-align: 2px;
     }
@@ -144,6 +144,8 @@
       cursor: pointer;
       transition: border-color .16s ease, background .16s ease, transform .16s ease;
     }
+    .dialog-close { display: grid; place-items: center; width: 34px; height: 34px; border: 0; border-radius: 9px; background: transparent; cursor: pointer; }
+    .dialog-close svg { width: 18px; height: 18px; }
     .icon-button:hover { border-color: var(--line-strong); background: var(--surface-hover); }
     .icon-button:active { transform: translateY(1px); }
     .icon-button svg { width: 18px; height: 18px; display: block; }
@@ -185,13 +187,13 @@
       gap: 7px;
       flex: 0 0 auto;
       margin-top: 3px;
-      padding: 7px 10px;
-      border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--line));
-      border-radius: 999px;
+      padding: 7px 0;
+      border: 0;
+      border-radius: 0;
       color: var(--accent);
-      background: var(--accent-soft);
+      background: transparent;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 500;
       white-space: nowrap;
     }
     .local-badge svg { width: 15px; height: 15px; display: block; }
@@ -1180,7 +1182,7 @@
     </div>
   </section>
 
-  <footer><span id="footerName">NFC Tap Log</span> · MIT License · <span data-i18n="footer">記録データはブラウザー内で処理</span></footer>
+  <footer><span id="footerName">NFC Tap Log</span> · MIT License · <span data-i18n="footer">タップの記録はブラウザー内で完結</span></footer>
   <div class="app-toast" id="appToast" role="status" aria-live="polite" aria-atomic="true" data-tone="default">
     <span class="app-toast-message" id="appToastMessage"></span>
     <button class="app-toast-action" id="appToastAction" type="button" hidden></button>
@@ -1206,8 +1208,8 @@
   <dialog id="nfcReadDialog" aria-labelledby="nfcReadDialogTitle">
     <div class="dialog-header">
       <h2 id="nfcReadDialogTitle" data-i18n="nfcReadDialogTitle">NFCタグを読む</h2>
-      <button class="icon-button" id="closeNfcReadButton" type="button" data-i18n-title="close" data-i18n-aria-label="close" title="閉じる" aria-label="閉じる">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg>
+      <button class="dialog-close" id="closeNfcReadButton" type="button" data-i18n-title="close" data-i18n-aria-label="close" title="閉じる" aria-label="閉じる">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12"/><path d="M18 6 6 18"/></svg>
       </button>
     </div>
     <div class="dialog-body">
@@ -1234,8 +1236,8 @@
   <dialog id="nfcWriteDialog" aria-labelledby="nfcWriteDialogTitle">
     <div class="dialog-header">
       <h2 id="nfcWriteDialogTitle" data-i18n="nfcWriteDialogTitle">NFCタグへ書き込む</h2>
-      <button class="icon-button" id="closeNfcWriteButton" type="button" data-i18n-title="close" data-i18n-aria-label="close" title="閉じる" aria-label="閉じる">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg>
+      <button class="dialog-close" id="closeNfcWriteButton" type="button" data-i18n-title="close" data-i18n-aria-label="close" title="閉じる" aria-label="閉じる">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12"/><path d="M18 6 6 18"/></svg>
       </button>
     </div>
     <div class="dialog-body">
@@ -1263,8 +1265,8 @@
   <dialog id="itemEditDialog" aria-labelledby="itemEditTitle">
     <div class="dialog-header">
       <h2 id="itemEditTitle" data-i18n="editItemTitle">アイテムを編集</h2>
-      <button class="icon-button" id="closeItemEditButton" type="button" data-i18n-title="close" data-i18n-aria-label="close" title="閉じる" aria-label="閉じる">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg>
+      <button class="dialog-close" id="closeItemEditButton" type="button" data-i18n-title="close" data-i18n-aria-label="close" title="閉じる" aria-label="閉じる">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12"/><path d="M18 6 6 18"/></svg>
       </button>
     </div>
     <form id="itemEditForm">
@@ -1301,8 +1303,8 @@
   <dialog id="eventEditDialog" aria-labelledby="eventEditTitle">
     <div class="dialog-header">
       <h2 id="eventEditTitle" data-i18n="editRecordTitle">履歴を編集</h2>
-      <button class="icon-button" id="closeEventEditButton" type="button" data-i18n-title="close" data-i18n-aria-label="close" title="閉じる" aria-label="閉じる">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg>
+      <button class="dialog-close" id="closeEventEditButton" type="button" data-i18n-title="close" data-i18n-aria-label="close" title="閉じる" aria-label="閉じる">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12"/><path d="M18 6 6 18"/></svg>
       </button>
     </div>
     <form id="eventEditForm">
@@ -1328,7 +1330,7 @@
   <dialog id="restoreDialog" aria-labelledby="restoreDialogTitle">
     <div class="dialog-header">
       <h2 id="restoreDialogTitle" data-i18n="restoreDialogTitle">バックアップを復元</h2>
-      <button class="icon-button" id="closeRestoreButton" type="button" data-i18n-title="close" data-i18n-aria-label="close" title="閉じる" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg></button>
+      <button class="dialog-close" id="closeRestoreButton" type="button" data-i18n-title="close" data-i18n-aria-label="close" title="閉じる" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12"/><path d="M18 6 6 18"/></svg></button>
     </div>
     <div class="dialog-body">
       <div class="backup-preview">
@@ -1351,8 +1353,8 @@
   <dialog id="helpDialog" aria-labelledby="helpTitle">
     <div class="dialog-header">
       <h2 id="helpTitle" data-i18n="helpTitle">使い方と注意事項</h2>
-      <button class="icon-button" id="closeHelpButton" type="button" data-i18n-title="close" data-i18n-aria-label="close" title="閉じる" aria-label="閉じる">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg>
+      <button class="dialog-close" id="closeHelpButton" type="button" data-i18n-title="close" data-i18n-aria-label="close" title="閉じる" aria-label="閉じる">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12"/><path d="M18 6 6 18"/></svg>
       </button>
     </div>
     <div class="dialog-body">
@@ -1390,7 +1392,7 @@
       'use strict';
 
       const APP_CONFIG = {"$schema":"./schemas/app-config.schema.json","name":"NFC Tap Log","nameJa":"NFC Tap Log","slug":"nfc-tap-log","version":"1.0.2","description":"Turn an NFC tag URL into a physical shortcut for local maintenance and routine logs.","descriptionJa":"NFCタグ用URLを、掃除・交換・点検などのローカル記録を開く物理ショートカットとして使うツールです。","defaultLanguage":"auto","repository":{"owner":"ttomohisa","name":"htmlapps-nfc-tap-log"},"build":{"output":"dist/index.html","blockRuntimeNetwork":true,"selfExtract":{"enabled":true,"output":"dist/index.self-extract.html"},"sizeBudget":{"readableWarningMb":25,"selfExtractWarningMb":12}}};
-      const BUILD_MANIFEST = {"schemaVersion":2,"builder":"single-html-app-template/1.3","generatedAtUtc":"2026-10-23T12:04:10.3595471Z","app":{"name":"NFC Tap Log","slug":"nfc-tap-log","version":"1.0.2"},"dependencies":[]};
+      const BUILD_MANIFEST = {"schemaVersion":2,"builder":"single-html-app-template/1.3","generatedAtUtc":"2026-11-13T23:36:52.2658069Z","app":{"name":"NFC Tap Log","slug":"nfc-tap-log","version":"1.0.2"},"dependencies":[]};
       // Asset payloads are Base64 exactly once. The JSON bundle itself is embedded directly.
       const assetBundle = {"schemaVersion":2,"dependencies":{}};
       const blobUrls = new Set();
@@ -2793,7 +2795,7 @@
           nfcWriteDialogTitle: 'NFCタグへ書き込む', nfcWritePayloadLabel: '書き込むURL', nfcOverwriteWarning: '既にNDEFデータが入っているタグでは、その内容を上書きします。', technicalDetails: '詳細情報', startNfcWrite: '書き込みを開始', nfcReadyTitle: '書き込む準備', nfcReadyBody: '開始するとNFCの利用許可が求められる場合があります。その後、スマートフォンをNFCタグへ近づけてください。', nfcWaitingTitle: 'NFCタグを近づけてください', nfcWaitingBody: '書き込みが完了するまで、スマートフォンをタグへ近づけたままにしてください。', nfcSuccessTitle: '書き込みました', nfcSuccessBody: 'このNFCタグをタップすると、現在のアイテム画面を開けます。', nfcWriteSuccess: 'NFCタグへ書き込みました', nfcErrorTitle: '書き込めませんでした', nfcErrorPermission: 'NFCの利用が許可されませんでした。ブラウザーの権限を確認して、もう一度試してください。', nfcErrorUnsupported: 'この端末またはブラウザーではNFC書き込みを利用できません。NFCが有効かも確認してください。', nfcErrorUnreadable: 'NFCを利用できません。端末のNFC設定やブラウザー設定を確認してください。', nfcErrorNetwork: '書き込み途中でタグが離れた、容量が不足している、または書き込みできないタグの可能性があります。', nfcErrorGeneric: 'NFCタグへ書き込めませんでした。タグを近づけたまま、もう一度試してください。', tryAgain: 'もう一度試す', done: '完了', nfcCanceled: 'NFC書き込みをキャンセルしました', nfcUnavailableToast: 'この環境ではNFCの直接読み書きを利用できません。',
           malformedTag: 'タグURLを読み込めませんでした。内容が壊れているか、このバージョンに対応していません。', storageUnavailable: '端末内の保存領域を利用できません。このブラウザー設定では記録を保存できない可能性があります。', unknownItem: 'アイテムが見つかりません。',
           confirmTitle: '確認', confirmAction: '実行する',
-          buildInfo: 'ビルド情報', appVersion: 'アプリバージョン', builtAt: '生成日時', dependencies: '内包依存数', footer: '記録データはブラウザー内で処理'
+          buildInfo: 'ビルド情報', appVersion: 'アプリバージョン', builtAt: '生成日時', dependencies: '内包依存数', footer: 'タップの記録はブラウザー内で完結'
         },
         en: {
           brandMeta: 'Log routine work with NFC tags',
@@ -2820,7 +2822,7 @@
           nfcWriteDialogTitle: 'Write to NFC tag', nfcWritePayloadLabel: 'URL to write', nfcOverwriteWarning: 'If the tag already contains NDEF data, that content will be overwritten.', technicalDetails: 'Technical details', startNfcWrite: 'Start writing', nfcReadyTitle: 'Ready to write', nfcReadyBody: 'Starting may ask for NFC permission. Then hold the phone close to the NFC tag.', nfcWaitingTitle: 'Hold an NFC tag near the phone', nfcWaitingBody: 'Keep the phone close to the tag until writing finishes.', nfcSuccessTitle: 'Tag written', nfcSuccessBody: 'Tapping this NFC tag will open the current item screen.', nfcWriteSuccess: 'NFC tag written', nfcErrorTitle: 'Could not write the tag', nfcErrorPermission: 'NFC permission was not granted. Check the browser permission and try again.', nfcErrorUnsupported: 'NFC writing is unavailable on this device or browser. Also check that NFC is enabled.', nfcErrorUnreadable: 'NFC is unavailable. Check the device NFC setting and browser settings.', nfcErrorNetwork: 'The tag may have moved away during writing, be too small, or not be writable.', nfcErrorGeneric: 'Could not write to the NFC tag. Keep the tag close and try again.', tryAgain: 'Try again', done: 'Done', nfcCanceled: 'NFC writing canceled', nfcUnavailableToast: 'Direct NFC reading/writing is unavailable in this environment.',
           malformedTag: 'Could not read the tag URL. It may be damaged or unsupported by this version.', storageUnavailable: 'Local storage is unavailable. This browser configuration may not be able to save records.', unknownItem: 'Item not found.',
           confirmTitle: 'Confirm', confirmAction: 'Continue',
-          buildInfo: 'Build information', appVersion: 'App version', builtAt: 'Built at', dependencies: 'Embedded dependencies', footer: 'Record data is processed in this browser'
+          buildInfo: 'Build information', appVersion: 'App version', builtAt: 'Built at', dependencies: 'Embedded dependencies', footer: 'Tap records stay in the browser'
         }
       };
 
