@@ -17,7 +17,7 @@
 ## 1. Product identity
 
 - **Name:** NFC Tap Log
-- **Version:** v1.0.2
+- **Version:** v1.0.3
 - **Repository:** `ttomohisa/htmlapps-nfc-tap-log`
 - **One-sentence purpose:** Turn a tag URL attached to a physical object into a shortcut for checking the previous maintenance/routine date and recording the next action locally.
 - **Primary users:** Individuals recording lightweight recurring work such as cleaning, replacement, inspection, watering, and replenishment.
