@@ -118,12 +118,13 @@ test('Every file export uses an editable filename with a fixed extension', () =>
 test('CSV and JSON exports use custom filenames and preserve complete backup records', async () => {
   const records = [{ id: 'item_0001', name: '=1+1', actionLabel: '掃除した', memo: 'fixture' }];
   const events = [{ id: 'event_0001', itemId: 'item_0001', performedAt: '2026-10-08T00:00:00.000Z', note: '+SUM(A1)' }];
-  const downloads = [];
+  const downloads = [], exportCounts = [];
   const c = sandbox(['safeExportFilename', 'csvCell', 'exportHistoryCsv', 'createBackupDocument', 'exportJsonBackup'], {
     APP_CONFIG: { slug: 'nfc-tap-log', version: '1.0.1' }, Blob,
     $: id => ({ value: id === '#csvFilename' ? '台所.CSV' : 'weekly.json' }),
     getAllItems: async () => records, getAllEvents: async () => events,
     tr: key => key, showToast() {}, downloadBlob: (blob, filename) => downloads.push({ blob, filename }),
+    markBackupDownloadInitiated: count => exportCounts.push(count)
   });
   await c.exportHistoryCsv(); await c.exportJsonBackup();
   assert.equal(downloads[0].filename, '台所.csv');
@@ -131,6 +132,7 @@ test('CSV and JSON exports use custom filenames and preserve complete backup rec
   assert.equal(downloads[1].filename, 'weekly.json');
   const backup = JSON.parse(await downloads[1].blob.text());
   assert.deepEqual(backup.items, records); assert.deepEqual(backup.events, events);
+  assert.deepEqual(exportCounts, [1], 'Only a JSON download updates the reminder baseline');
 });
 
 test('QR export captures its custom filename before asynchronous PNG generation', async () => {
@@ -223,4 +225,213 @@ test('Header fallback version and touch targets match the release on narrow scre
   assert.match(source, /\.language-button\s*\{[^}]*min-width:\s*44px;[^}]*min-height:\s*44px;/);
   assert.match(source, /\.header-icon-button\s*\{[^}]*min-width:\s*44px;[^}]*min-height:\s*44px;/);
   assert.match(source, /@media \(max-width: 420px\)\s*\{\s*\.version-badge\s*\{[^}]*display:\s*table/);
+});
+
+
+test('New records capture historical item/action labels and CSV uses them after an item edit', async () => {
+  const items = [{ id: 'item_0001', name: 'New name', actionLabel: 'Replaced' }];
+  const events = [
+    { id: 'event_0001', itemId: 'item_0001', itemName: 'Original name', actionLabel: 'Cleaned', performedAt: '2026-10-08T00:00:00.000Z', note: '' },
+    { id: 'event_0002', itemId: 'item_0001', performedAt: '2026-10-09T00:00:00.000Z', note: '' }
+  ];
+  const downloads = [];
+  const c = sandbox(['csvCell', 'safeExportFilename', 'exportHistoryCsv'], {
+    Blob, getAllItems: async () => items, getAllEvents: async () => events,
+    $: () => ({ value: 'history.csv' }), downloadBlob: blob => downloads.push(blob),
+    showToast() {}, tr: value => value
+  });
+  await c.exportHistoryCsv();
+  const csv = await downloads[0].text();
+  assert.ok(csv.includes('Original name,Cleaned,2026-10-08T00:00:00.000Z'), csv);
+  assert.ok(csv.includes('New name,Replaced,2026-10-09T00:00:00.000Z'), csv);
+  assert.match(fn('recordCurrentItem'), /itemName: item\.name, actionLabel: item\.actionLabel/);
+});
+
+test('A new record and item timestamp are written through one IndexedDB transaction', async () => {
+  const transactions = [], operations = [];
+  const db = { transaction(names, mode) {
+    transactions.push({ names: [...names], mode });
+    const tx = { objectStore(name) {
+      return { add(value) { operations.push(['add', name, value.id]); }, put(value) { operations.push(['put', name, value.id]); } };
+    } };
+    queueMicrotask(() => tx.oncomplete?.());
+    return tx;
+  } };
+  const c = sandbox(['txDone', 'addRecordAndUpdateItem'], { db });
+  await c.addRecordAndUpdateItem({ id: 'item_0001' }, { id: 'event_0001' });
+  assert.deepEqual(transactions, [{ names: ['items', 'events'], mode: 'readwrite' }]);
+  assert.deepEqual(operations, [['add', 'events', 'event_0001'], ['put', 'items', 'item_0001']]);
+  assert.doesNotMatch(fn('recordCurrentItem'), /await addEvent\(event\)/);
+});
+
+test('Editing an item freezes missing legacy labels before changing item settings', async () => {
+  const updates = [], puts = [], transactions = [];
+  const legacy = { id: 'event_old', itemId: 'item_0001', performedAt: '2026-11-01T00:00:00.000Z' };
+  const complete = { id: 'event_new', itemId: 'item_0001', itemName: 'Already saved', actionLabel: 'Previously saved' };
+  const db = { transaction(names, mode) {
+    transactions.push([...names]);
+    const tx = { objectStore(name) {
+      if (name === 'items') return { put(item) { puts.push(item); } };
+      return { index() { return { openCursor() {
+        const request = { onsuccess: null, result: null };
+        const records = [legacy, complete];
+        function deliver(index) {
+          if (index === records.length) {
+            request.result = null;
+            request.onsuccess?.();
+            queueMicrotask(() => tx.oncomplete?.());
+            return;
+          }
+          request.result = {
+            value: records[index],
+            update(record) { updates.push(record); },
+            continue() { queueMicrotask(() => deliver(index + 1)); }
+          };
+          request.onsuccess?.();
+        }
+        queueMicrotask(() => deliver(0));
+        return request;
+      } }; } };
+    } };
+    return tx;
+  } };
+  const c = sandbox(['txDone', 'saveItemAndSnapshotLegacyHistory'], { db, IDBKeyRange: { only: value => value } });
+  const previous = { id: 'item_0001', name: 'Old name', actionLabel: 'Cleaned', intervalDays: 30 };
+  await c.saveItemAndSnapshotLegacyHistory({ ...previous, actionLabel: 'Replaced' }, previous);
+  assert.deepEqual(transactions, [['items', 'events']]);
+  assert.equal(puts[0].actionLabel, 'Replaced');
+  assert.equal(updates.length, 1);
+  assert.equal(updates[0].itemName, 'Old name');
+  assert.equal(updates[0].actionLabel, 'Cleaned');
+});
+
+test('Merge restore refuses conflicting item IDs before any database write', async () => {
+  const existing = { id: 'item_0001', name: 'Filter', actionLabel: 'Cleaned', intervalDays: 30 };
+  let writes = 0;
+  const db = { transaction() { writes++; throw Error('Should not start a write transaction'); } };
+  const c = sandbox(['mergeBackupRecords'], {
+    db, getAllItems: async () => [existing], getAllEvents: async () => []
+  });
+  await assert.rejects(
+    c.mergeBackupRecords([{ ...existing, actionLabel: 'Replaced' }], []),
+    error => error.code === 'BACKUP_ITEM_CONFLICT'
+  );
+  assert.equal(writes, 0);
+  assert.match(fn('applyRestore'), /BACKUP_ITEM_CONFLICT/);
+});
+
+test('Backup format 1 keeps optional historical labels and rejects invalid labels', () => {
+  const c = sandbox(['validIsoDate', 'normalizeBackupItem', 'normalizeBackupEvent', 'validateBackupDocument'], {
+    APP_CONFIG: { slug: 'nfc-tap-log' }, ITEM_NAME_MAX: 60, ACTION_MAX: 40
+  });
+  const data = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures/maintenance-backup.json'), 'utf8'));
+  const legacy = c.validateBackupDocument(data);
+  assert.equal(Object.hasOwn(legacy.events[0], 'actionLabel'), false);
+  data.events[0].itemName = 'Past label';
+  data.events[0].actionLabel = 'Cleaned';
+  const parsed = c.validateBackupDocument(data);
+  assert.equal(parsed.events[0].itemName, 'Past label');
+  assert.equal(parsed.events[0].actionLabel, 'Cleaned');
+  assert.throws(() => c.validateBackupDocument({ ...data, events: [{ ...data.events[0], actionLabel: 'x'.repeat(41) }] }), /Invalid event action/);
+});
+
+test('Intervals use local calendar days and opened tabs recognize tag hash navigation', () => {
+  const c = sandbox(['daysBetween']);
+  assert.equal(c.daysBetween(new Date(2026, 10, 15, 0, 5), new Date(2026, 10, 14, 23, 55)), 1);
+  assert.equal(c.daysBetween(new Date(2026, 10, 15, 0, 5), new Date(2026, 10, 15, 0, 1)), 0);
+  assert.equal(c.daysBetween(new Date(2026, 10, 14), new Date(2026, 10, 15)), 0);
+  assert.match(fn('bindUi'), /addEventListener\('hashchange'/);
+  assert.match(fn('bindUi'), /importPortableFromHash\(\)/);
+});
+
+
+test('Release workflow only publishes merged PR versions with built standalone assets', () => {
+  const workflow = fs.readFileSync(path.join(__dirname, '../.github/workflows/release-on-merge.yml'), 'utf8');
+  assert.match(workflow, /pull_request:\s*\n\s*types:\s*\[closed\]/);
+  assert.match(workflow, /pull_request\.merged == true/);
+  assert.match(workflow, /pull_request\.base\.ref == 'main'/);
+  assert.match(workflow, /contents:\s*write/);
+  assert.match(workflow, /scripts\/check-repository\.ps1/);
+  assert.match(workflow, /app\.config\.json/);
+  assert.match(workflow, /gh release view \$tag/);
+  assert.match(workflow, /gh release create \$tag/);
+  assert.match(workflow, /dist\/index\.html#nfc-tap-log\.html/);
+  assert.match(workflow, /dist\/index\.self-extract\.html#nfc-tap-log\.self-extract\.html/);
+});
+
+test('Phone layouts prioritize transfer actions and collapse filename/deletion controls', () => {
+  assert.match(source, /\.local-badge \{ display: none; \}/);
+  assert.match(source, /<details class="data-options" id="dataExportOptions">/);
+  assert.match(source, /<details class="data-danger-details" id="dataDangerDetails">/);
+  assert.match(source, /id="exportCsvButton"/);
+  assert.match(source, /id="exportJsonButton"/);
+  assert.match(source, /id="restoreJsonButton"/);
+  assert.match(source, /id="deleteAllDataButton"/);
+  assert.match(source, /dataBackupTitle: '記録を保存'/);
+  assert.match(source, /dataRestoreTitle: 'Restore a backup'/);
+});
+
+
+test('Backup reminder starts after 10 records or 30 days, not on an empty or fresh history', () => {
+  const now = Date.UTC(2026, 10, 15, 0, 0);
+  let stored = null;
+  const c = sandbox(['readBackupReminderState', 'getBackupReminderStatus'], {
+    storageKeys: { backupReminder: 'test:backup' },
+    readStorage: () => stored
+  });
+  vm.runInContext('const BACKUP_REMINDER_DAYS = 30, BACKUP_REMINDER_EVENTS = 10, MS_PER_DAY = 86400000; let backupReminderDismissedThisSession = false;', c);
+  const event = (createdAt = new Date(now).toISOString()) => ({ createdAt });
+  assert.equal(c.getBackupReminderStatus([], now), null);
+  assert.equal(c.getBackupReminderStatus(Array(9).fill(event()), now), null);
+  assert.equal(c.getBackupReminderStatus(Array(10).fill(event()), now).key, 'backupReminderNoExport');
+  assert.equal(c.getBackupReminderStatus([event(new Date(now - 31 * 86400000).toISOString())], now).key, 'backupReminderNoExportAge');
+  assert.equal(c.getBackupReminderStatus([event(new Date(now + 31 * 86400000).toISOString())], now), null);
+
+  stored = JSON.stringify({ lastExportAt: now - 3 * 86400000, eventCountAtExport: 2, snoozedUntil: 0 });
+  assert.equal(c.getBackupReminderStatus(Array(11).fill(event()), now), null);
+  assert.equal(c.getBackupReminderStatus(Array(12).fill(event()), now).key, 'backupReminderNewRecords');
+  stored = JSON.stringify({ lastExportAt: now - 31 * 86400000, eventCountAtExport: 11, snoozedUntil: 0 });
+  assert.equal(c.getBackupReminderStatus(Array(11).fill(event()), now).key, 'backupReminderElapsed');
+  stored = JSON.stringify({ lastExportAt: now - 31 * 86400000, eventCountAtExport: 0, snoozedUntil: now + 7 * 86400000 });
+  assert.equal(c.getBackupReminderStatus(Array(30).fill(event()), now), null);
+  assert.equal(c.getBackupReminderStatus(Array(30).fill(event()), now + 8 * 86400000).key, 'backupReminderNewRecords');
+  stored = '{not valid JSON';
+  assert.equal(c.getBackupReminderStatus(Array(10).fill(event()), now).key, 'backupReminderNoExport');
+});
+
+test('Snoozing backup reminder is local, seven days long, and survives a refresh', () => {
+  let saved = '', reminder = { hidden: false }, stateText = { textContent: '' };
+  const c = sandbox(['readBackupReminderState', 'getBackupReminderStatus', 'renderBackupReminder', 'snoozeBackupReminder'], {
+    storageKeys: { backupReminder: 'test:backup' },
+    readStorage: () => saved,
+    writeStorage: (_key, value) => { saved = value; },
+    $: id => id === '#backupReminder' ? reminder : stateText,
+    tr: key => key
+  });
+  vm.runInContext('const BACKUP_REMINDER_DAYS = 30, BACKUP_REMINDER_EVENTS = 10, BACKUP_REMINDER_SNOOZE_DAYS = 7, MS_PER_DAY = 86400000; let backupReminderDismissedThisSession = false; const homeSnapshot = { events: Array(10).fill({createdAt: new Date().toISOString()}) };', c);
+  c.renderBackupReminder(Array(10).fill({ createdAt: new Date().toISOString() }));
+  assert.equal(reminder.hidden, false);
+  c.snoozeBackupReminder();
+  assert.equal(reminder.hidden, true);
+  assert.ok(JSON.parse(saved).snoozedUntil >= Date.now() + 6 * 86400000);
+  vm.runInContext('backupReminderDismissedThisSession = false;', c);
+  c.renderBackupReminder(Array(10).fill({ createdAt: new Date().toISOString() }));
+  assert.equal(reminder.hidden, true, 'A new session still respects the stored snooze');
+});
+
+test('Failed JSON downloads do not change backup reminder state and CSV does not mark an export', async () => {
+  const events = [{ id: 'event_0001' }], items = [{ id: 'item_0001' }];
+  let marked = 0;
+  const c = sandbox(['safeExportFilename', 'createBackupDocument', 'exportJsonBackup'], {
+    APP_CONFIG: { slug: 'nfc-tap-log', version: '1.0.3' }, Blob,
+    $: () => ({ value: 'test-backup' }), getAllItems: async () => items, getAllEvents: async () => events,
+    markBackupDownloadInitiated: () => marked++, downloadBlob: () => { throw new Error('Download failed'); },
+    tr: key => key, showToast() {}
+  });
+  await c.exportJsonBackup();
+  assert.equal(marked, 0);
+  assert.doesNotMatch(fn('exportHistoryCsv'), /markBackupDownloadInitiated/);
+  assert.match(fn('deleteAllData'), /storageKeys\.backupReminder/);
+  assert.match(source, /id="backupReminderSaveButton"/);
+  assert.match(source, /id="backupReminderLaterButton"/);
 });

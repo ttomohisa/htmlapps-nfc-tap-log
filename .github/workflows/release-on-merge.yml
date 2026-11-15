@@ -1,0 +1,74 @@
+name: Release when a PR is merged
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nfc-tap-log-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - name: Check out the merged commit
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Validate and build the standalone files
+        shell: pwsh
+        run: ./scripts/check-repository.ps1
+
+      - name: Create version tag and GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MERGED_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $version = [string](Get-Content -Raw -Encoding UTF8 app.config.json | ConvertFrom-Json).version
+          if ($version -notmatch '^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$') {
+            throw "Invalid semantic version in app.config.json: $version"
+          }
+          $tag = "v$version"
+          $null = gh release view $tag --json tagName 2>$null
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "GitHub Release $tag already exists; nothing to publish."
+            "## Release $tag already exists" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Encoding utf8 -Append
+            exit 0
+          }
+
+          # A prior attempt may have created a tag without finishing the release.
+          $remoteTag = git ls-remote --tags origin "refs/tags/$tag"
+          if ($LASTEXITCODE -ne 0) { throw "Unable to check remote tag $tag" }
+          if ($remoteTag) {
+            git fetch --tags --force
+            if ($LASTEXITCODE -ne 0) { throw "Unable to fetch remote tag $tag" }
+            $tagCommit = git rev-list -n 1 $tag
+            if ($LASTEXITCODE -ne 0 -or $tagCommit.Trim() -ne $env:MERGED_SHA) {
+              throw "Tag $tag already points to another commit. Bump app.config.json version before merging."
+            }
+          }
+
+          $assets = @(
+            'dist/index.html#nfc-tap-log.html',
+            'dist/index.self-extract.html#nfc-tap-log.self-extract.html'
+          )
+          # gh release create creates the tag at MERGED_SHA when it does not exist.
+          gh release create $tag @assets --target $env:MERGED_SHA --title "NFC Tap Log $tag" --generate-notes
+          if ($LASTEXITCODE -ne 0) { throw "Failed to publish GitHub Release $tag" }
+          "## Published $tag" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Encoding utf8 -Append
+          "Tag and release: https://github.com/$env:GITHUB_REPOSITORY/releases/tag/$tag" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Encoding utf8 -Append

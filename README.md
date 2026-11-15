@@ -25,6 +25,7 @@ GitHub Pages delivers the initial HTML. Item data, notes, history, QR generation
 - **Use QR as a fallback** — Generate, save, or print a QR code containing the same Portable Tag URL.
 - **Manage records locally** — Search, sort, edit history, add notes, delete with Undo, and edit items without requiring NFC.
 - **Back up and move data yourself** — Export history as CSV and save/restore a complete JSON backup.
+- **Get a backup reminder** — The home page suggests a JSON backup after 10 records or 30 days since the first record or last export. You can dismiss it for seven days.
 - **Japanese / English UI** — Both languages are included in the same HTML.
 - **No runtime CDN or cloud storage** — The distributed app keeps `connect-src 'none'` and includes the QR implementation locally.
 
@@ -36,7 +37,7 @@ Open the [GitHub Pages demo](https://ttomohisa.github.io/htmlapps-nfc-tap-log/).
 
 ### Use the single HTML file
 
-1. Download `dist/index.html` from this repository or from a release package.
+1. Save the repository-root [`nfc-tap-log.html`](nfc-tap-log.html), or build locally to generate `dist/index.html`.
 2. Open the file in a current browser.
 3. Local logging, history, QR generation, CSV export, and JSON backup/restore work from the saved file.
 
@@ -78,6 +79,8 @@ The default **Suggested timing** sort places past-interval items first, followed
 If a Portable Tag URL uses an existing item ID but contains older item details than the copy edited in this browser, the browser-local item wins. NFC Tap Log does not silently overwrite local history or memos with stale tag data.
 
 ## Backup and restore
+
+The home page shows a backup reminder after 10 records, or 30 days since the first record or last JSON export. **Later** hides it for seven days. CSV export does not reset this reminder. The browser cannot confirm that a downloaded file was retained, so the reminder tracks the JSON download action.
 
 **History CSV** is a flat export for spreadsheets or reporting. It is saved as UTF-8 with a BOM and is not a restore format.
 
@@ -162,6 +165,17 @@ Bug reports and feature proposals are welcome through GitHub Issues. See [CONTRI
 Copyright © 2026 ttomohisa
 
 Licensed under the [MIT License](LICENSE).
+
+## v1.0.3 history integrity and tag URL fixes
+
+- The local-processing badge is hidden on phone layouts and the hero explains the workflow more directly.
+- Data management prioritizes backup and restore, keeps CSV export separate, and collapses filename customization and permanent deletion until requested. Delete confirmation remains intact.
+- Merging a PR into `main` triggers a tag and GitHub Release for the version in `app.config.json`, unless that release already exists. Both standalone HTML variants are attached.
+
+- New records preserve the item name and action at the time they were logged, so later edits do not rewrite CSV history. Existing legacy records receive their previous labels when the item is first edited after upgrading; previously lost labels cannot be recovered.
+- Adding a record and updating its item's timestamp now use one IndexedDB transaction.
+- Merge restore stops without writing if an existing item ID has different name, action, or interval settings. Older JSON backups remain supported.
+- Tag URLs are recognized when the hash changes in an already-open tab. Elapsed days use local calendar dates.
 
 ## v1.0.2 short-screen dialogs
 

@@ -1,5 +1,13 @@
 # APP_SPEC.md
 
+## v1.0.3 — Backup reminder
+
+- Show a small reminder in the home data-management panel after 10 records or 30 days since the first record if no JSON export is recorded. After an export attempt, show it again after 10 additional records or 30 days.
+- The reminder is not a notification service. It is evaluated locally when the home data refreshes, with no network activity or background scheduling.
+- "Later" stores a seven-day snooze in localStorage, and deletion of all records clears this baseline.
+- Only initiating a JSON download updates the baseline; CSV export, QR export and failed JSON downloads do not. Browsers cannot confirm whether a user retained the downloaded file.
+- Keep export and restore format 1 and the existing data management controls unchanged.
+
 ## Phone footer and final Help metadata
 
 - Hide only the informational footer at the existing 720px phone breakpoint; preserve functional tabs/actions and header versions.
@@ -9,7 +17,7 @@
 ## 1. Product identity
 
 - **Name:** NFC Tap Log
-- **Version:** v1.0.2
+- **Version:** v1.0.3
 - **Repository:** `ttomohisa/htmlapps-nfc-tap-log`
 - **One-sentence purpose:** Turn a tag URL attached to a physical object into a shortcut for checking the previous maintenance/routine date and recording the next action locally.
 - **Primary users:** Individuals recording lightweight recurring work such as cleaning, replacement, inspection, watering, and replenishment.

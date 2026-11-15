@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add a quiet, on-page JSON backup reminder after 10 records or 30 days, with a seven-day snooze stored locally. Only an initiated JSON download updates the reminder baseline; the browser cannot verify files retained on disk.
+
 - Hide the phone informational footer and place existing build metadata at the end of Help, preserving functional controls and keyboard access.
 
 
