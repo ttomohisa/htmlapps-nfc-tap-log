@@ -36,7 +36,7 @@ Open the [GitHub Pages demo](https://ttomohisa.github.io/htmlapps-nfc-tap-log/).
 
 ### Use the single HTML file
 
-1. Download `dist/index.html` from this repository or from a release package.
+1. Save the repository-root [`nfc-tap-log.html`](nfc-tap-log.html), or build locally to generate `dist/index.html`.
 2. Open the file in a current browser.
 3. Local logging, history, QR generation, CSV export, and JSON backup/restore work from the saved file.
 
@@ -162,6 +162,13 @@ Bug reports and feature proposals are welcome through GitHub Issues. See [CONTRI
 Copyright © 2026 ttomohisa
 
 Licensed under the [MIT License](LICENSE).
+
+## v1.0.3 history integrity and tag URL fixes
+
+- New records preserve the item name and action at the time they were logged, so later edits do not rewrite CSV history. Existing legacy records receive their previous labels when the item is first edited after upgrading; previously lost labels cannot be recovered.
+- Adding a record and updating its item's timestamp now use one IndexedDB transaction.
+- Merge restore stops without writing if an existing item ID has different name, action, or interval settings. Older JSON backups remain supported.
+- Tag URLs are recognized when the hash changes in an already-open tab. Elapsed days use local calendar dates.
 
 ## v1.0.2 short-screen dialogs
 
