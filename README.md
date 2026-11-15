@@ -167,7 +167,7 @@ Licensed under the [MIT License](LICENSE).
 
 - The local-processing badge is hidden on phone layouts and the hero explains the workflow more directly.
 - Data management prioritizes backup and restore, keeps CSV export separate, and collapses filename customization and permanent deletion until requested. Delete confirmation remains intact.
-- Merging this PR into `main` triggers creation of the `v1.0.3` tag and GitHub Release if not already present. Both standalone HTML variants are attached to the release.
+- Merging a PR into `main` triggers a tag and GitHub Release for the version in `app.config.json`, unless that release already exists. Both standalone HTML variants are attached.
 
 - New records preserve the item name and action at the time they were logged, so later edits do not rewrite CSV history. Existing legacy records receive their previous labels when the item is first edited after upgrading; previously lost labels cannot be recovered.
 - Adding a record and updating its item's timestamp now use one IndexedDB transaction.
