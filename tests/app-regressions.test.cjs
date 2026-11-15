@@ -224,3 +224,120 @@ test('Header fallback version and touch targets match the release on narrow scre
   assert.match(source, /\.header-icon-button\s*\{[^}]*min-width:\s*44px;[^}]*min-height:\s*44px;/);
   assert.match(source, /@media \(max-width: 420px\)\s*\{\s*\.version-badge\s*\{[^}]*display:\s*table/);
 });
+
+
+test('New records capture historical item/action labels and CSV uses them after an item edit', async () => {
+  const items = [{ id: 'item_0001', name: 'New name', actionLabel: 'Replaced' }];
+  const events = [
+    { id: 'event_0001', itemId: 'item_0001', itemName: 'Original name', actionLabel: 'Cleaned', performedAt: '2026-10-08T00:00:00.000Z', note: '' },
+    { id: 'event_0002', itemId: 'item_0001', performedAt: '2026-10-09T00:00:00.000Z', note: '' }
+  ];
+  const downloads = [];
+  const c = sandbox(['csvCell', 'safeExportFilename', 'exportHistoryCsv'], {
+    Blob, getAllItems: async () => items, getAllEvents: async () => events,
+    $: () => ({ value: 'history.csv' }), downloadBlob: blob => downloads.push(blob),
+    showToast() {}, tr: value => value
+  });
+  await c.exportHistoryCsv();
+  const csv = await downloads[0].text();
+  assert.ok(csv.includes('Original name,Cleaned,2026-10-08T00:00:00.000Z'), csv);
+  assert.ok(csv.includes('New name,Replaced,2026-10-09T00:00:00.000Z'), csv);
+  assert.match(fn('recordCurrentItem'), /itemName: item\.name, actionLabel: item\.actionLabel/);
+});
+
+test('A new record and item timestamp are written through one IndexedDB transaction', async () => {
+  const transactions = [], operations = [];
+  const db = { transaction(names, mode) {
+    transactions.push({ names: [...names], mode });
+    const tx = { objectStore(name) {
+      return { add(value) { operations.push(['add', name, value.id]); }, put(value) { operations.push(['put', name, value.id]); } };
+    } };
+    queueMicrotask(() => tx.oncomplete?.());
+    return tx;
+  } };
+  const c = sandbox(['txDone', 'addRecordAndUpdateItem'], { db });
+  await c.addRecordAndUpdateItem({ id: 'item_0001' }, { id: 'event_0001' });
+  assert.deepEqual(transactions, [{ names: ['items', 'events'], mode: 'readwrite' }]);
+  assert.deepEqual(operations, [['add', 'events', 'event_0001'], ['put', 'items', 'item_0001']]);
+  assert.doesNotMatch(fn('recordCurrentItem'), /await addEvent\(event\)/);
+});
+
+test('Editing an item freezes missing legacy labels before changing item settings', async () => {
+  const updates = [], puts = [], transactions = [];
+  const legacy = { id: 'event_old', itemId: 'item_0001', performedAt: '2026-11-01T00:00:00.000Z' };
+  const complete = { id: 'event_new', itemId: 'item_0001', itemName: 'Already saved', actionLabel: 'Previously saved' };
+  const db = { transaction(names, mode) {
+    transactions.push([...names]);
+    const tx = { objectStore(name) {
+      if (name === 'items') return { put(item) { puts.push(item); } };
+      return { index() { return { openCursor() {
+        const request = { onsuccess: null, result: null };
+        const records = [legacy, complete];
+        function deliver(index) {
+          if (index === records.length) {
+            request.result = null;
+            request.onsuccess?.();
+            queueMicrotask(() => tx.oncomplete?.());
+            return;
+          }
+          request.result = {
+            value: records[index],
+            update(record) { updates.push(record); },
+            continue() { queueMicrotask(() => deliver(index + 1)); }
+          };
+          request.onsuccess?.();
+        }
+        queueMicrotask(() => deliver(0));
+        return request;
+      } }; } };
+    } };
+    return tx;
+  } };
+  const c = sandbox(['txDone', 'saveItemAndSnapshotLegacyHistory'], { db, IDBKeyRange: { only: value => value } });
+  const previous = { id: 'item_0001', name: 'Old name', actionLabel: 'Cleaned', intervalDays: 30 };
+  await c.saveItemAndSnapshotLegacyHistory({ ...previous, actionLabel: 'Replaced' }, previous);
+  assert.deepEqual(transactions, [['items', 'events']]);
+  assert.equal(puts[0].actionLabel, 'Replaced');
+  assert.equal(updates.length, 1);
+  assert.equal(updates[0].itemName, 'Old name');
+  assert.equal(updates[0].actionLabel, 'Cleaned');
+});
+
+test('Merge restore refuses conflicting item IDs before any database write', async () => {
+  const existing = { id: 'item_0001', name: 'Filter', actionLabel: 'Cleaned', intervalDays: 30 };
+  let writes = 0;
+  const db = { transaction() { writes++; throw Error('Should not start a write transaction'); } };
+  const c = sandbox(['mergeBackupRecords'], {
+    db, getAllItems: async () => [existing], getAllEvents: async () => []
+  });
+  await assert.rejects(
+    c.mergeBackupRecords([{ ...existing, actionLabel: 'Replaced' }], []),
+    error => error.code === 'BACKUP_ITEM_CONFLICT'
+  );
+  assert.equal(writes, 0);
+  assert.match(fn('applyRestore'), /BACKUP_ITEM_CONFLICT/);
+});
+
+test('Backup format 1 keeps optional historical labels and rejects invalid labels', () => {
+  const c = sandbox(['validIsoDate', 'normalizeBackupItem', 'normalizeBackupEvent', 'validateBackupDocument'], {
+    APP_CONFIG: { slug: 'nfc-tap-log' }, ITEM_NAME_MAX: 60, ACTION_MAX: 40
+  });
+  const data = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures/maintenance-backup.json'), 'utf8'));
+  const legacy = c.validateBackupDocument(data);
+  assert.equal(Object.hasOwn(legacy.events[0], 'actionLabel'), false);
+  data.events[0].itemName = 'Past label';
+  data.events[0].actionLabel = 'Cleaned';
+  const parsed = c.validateBackupDocument(data);
+  assert.equal(parsed.events[0].itemName, 'Past label');
+  assert.equal(parsed.events[0].actionLabel, 'Cleaned');
+  assert.throws(() => c.validateBackupDocument({ ...data, events: [{ ...data.events[0], actionLabel: 'x'.repeat(41) }] }), /Invalid event action/);
+});
+
+test('Intervals use local calendar days and opened tabs recognize tag hash navigation', () => {
+  const c = sandbox(['daysBetween']);
+  assert.equal(c.daysBetween(new Date(2026, 10, 15, 0, 5), new Date(2026, 10, 14, 23, 55)), 1);
+  assert.equal(c.daysBetween(new Date(2026, 10, 15, 0, 5), new Date(2026, 10, 15, 0, 1)), 0);
+  assert.equal(c.daysBetween(new Date(2026, 10, 14), new Date(2026, 10, 15)), 0);
+  assert.match(fn('bindUi'), /addEventListener\('hashchange'/);
+  assert.match(fn('bindUi'), /importPortableFromHash\(\)/);
+});
