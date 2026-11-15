@@ -843,7 +843,7 @@
           <img id="appBrandIcon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJORkMgVGFwIExvZyI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTQiIGZpbGw9IiMxNjYyNEYiLz4KICA8ZyBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWNhcD0icm91bmQiPgogICAgPHBhdGggZD0iTTE1IDE3YzQtNCA5LTYgMTQtNiIvPgogICAgPHBhdGggZD0iTTE3LjUgMjJjMy0yLjggNi43LTQuMiAxMC41LTQuMiIvPgogIDwvZz4KICA8dGV4dCB4PSIzMiIgeT0iNDAiIGZpbGw9IiNmZmYiIGZvbnQtZmFtaWx5PSJBcmlhbCwgSGVsdmV0aWNhLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjIyIiBmb250LXdlaWdodD0iODAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBsZXR0ZXItc3BhY2luZz0iMC41Ij5ORkM8L3RleHQ+CiAgPHBhdGggZD0ibTQzLjUgNDkgMy4xIDMuMSA2LTciIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg==" alt="">
         </div>
         <div class="brand-copy">
-          <p class="brand-name"><span id="brandName">NFC Tap Log</span><span class="version-badge" id="versionBadge">v1.0.2</span></p>
+          <p class="brand-name"><span id="brandName">NFC Tap Log</span><span class="version-badge" id="versionBadge">v1.0.3</span></p>
           <p class="brand-meta" data-i18n="brandMeta">NFCタグで、作業履歴を記録</p>
         </div>
       </div>
@@ -1391,8 +1391,8 @@
     (() => {
       'use strict';
 
-      const APP_CONFIG = {"$schema":"./schemas/app-config.schema.json","name":"NFC Tap Log","nameJa":"NFC Tap Log","slug":"nfc-tap-log","version":"1.0.2","description":"Turn an NFC tag URL into a physical shortcut for local maintenance and routine logs.","descriptionJa":"NFCタグ用URLを、掃除・交換・点検などのローカル記録を開く物理ショートカットとして使うツールです。","defaultLanguage":"auto","repository":{"owner":"ttomohisa","name":"htmlapps-nfc-tap-log"},"build":{"output":"dist/index.html","blockRuntimeNetwork":true,"selfExtract":{"enabled":true,"output":"dist/index.self-extract.html"},"sizeBudget":{"readableWarningMb":25,"selfExtractWarningMb":12}}};
-      const BUILD_MANIFEST = {"schemaVersion":2,"builder":"single-html-app-template/1.3","generatedAtUtc":"2026-11-13T23:36:52.2658069Z","app":{"name":"NFC Tap Log","slug":"nfc-tap-log","version":"1.0.2"},"dependencies":[]};
+      const APP_CONFIG = {"$schema":"./schemas/app-config.schema.json","name":"NFC Tap Log","nameJa":"NFC Tap Log","slug":"nfc-tap-log","version":"1.0.3","description":"Turn an NFC tag URL into a physical shortcut for local maintenance and routine logs.","descriptionJa":"NFCタグ用URLを、掃除・交換・点検などのローカル記録を開く物理ショートカットとして使うツールです。","defaultLanguage":"auto","repository":{"owner":"ttomohisa","name":"htmlapps-nfc-tap-log"},"build":{"output":"dist/index.html","blockRuntimeNetwork":true,"selfExtract":{"enabled":true,"output":"dist/index.self-extract.html"},"sizeBudget":{"readableWarningMb":25,"selfExtractWarningMb":12}}};
+      const BUILD_MANIFEST = {"schemaVersion":2,"builder":"single-html-app-template/1.3","generatedAtUtc":"2026-11-13T23:36:52.2658069Z","app":{"name":"NFC Tap Log","slug":"nfc-tap-log","version":"1.0.3"},"dependencies":[]};
       // Asset payloads are Base64 exactly once. The JSON bundle itself is embedded directly.
       const assetBundle = {"schemaVersion":2,"dependencies":{}};
       const blobUrls = new Set();
@@ -2780,7 +2780,7 @@
           helpOffline: '配布HTMLは実行時CDNや外部APIを使いません。ユーザーの記録データは完全ローカル処理です。',
           introTitle: '物にかざして、前回を確認して、記録する', lead: '掃除・交換・点検などの記録を、その物専用のタグURLから開けるようにします。', localBadge: '完全ローカル処理',
           loading: '端末内の記録を読み込んでいます…', emptyTitle: '最初のタグを作る', emptyBody: 'エアコンの掃除や浄水器の交換など、「最後にいつやったか」を残したい物を登録します。', createFirst: '最初のタグを作る',
-          itemsTitle: '記録するもの', itemsCount: '{count}件をこのブラウザーに保存', itemsFilteredCount: '{total}件中 {count}件を表示', newTag: '新しいタグ', homeOverviewLabel: 'ホームの概要', overdueItems: '目安超過', dueTodayItems: '今日が目安', recentWeekRecords: '7日以内の記録', searchItems: '検索', searchItemsPlaceholder: '名前・記録内容・メモ', sortItems: '並び順', sortPriority: '目安優先', sortRecent: '最近記録した順', sortUpdated: '最近更新した順', sortName: '名前順', noMatchingItems: '一致するアイテムがありません', noMatchingItemsBody: '検索語を変えると、保存済みのアイテムを再表示できます。', recentRecordsTitle: '最近の記録', recentRecordsBody: 'このブラウザーに保存した直近5件です。', localCardTitle: '記録はこのブラウザー内', localCardBody: 'アイテムと履歴はこのブラウザーの保存領域に保存し、このアプリからサーバーへ送信しません。', scopeCardTitle: '記録をバックアップできます', scopeCardBody: '履歴のCSV保存とJSONバックアップ・復元で、記録を自分で保存・移行できます。', dataManagementTitle: 'データ管理', dataManagementBody: '記録を書き出したり、別端末へ移すためのバックアップを保存・復元できます。', dataSummaryLabel: '保存データの概要', dataItems: 'アイテム', dataEvents: '履歴', exportCsv: '履歴CSVを保存', exportJson: 'JSONバックアップを保存', restoreJson: 'JSONバックアップを復元', dataExportNote: 'CSVは履歴確認用です。アイテム設定や履歴を丸ごと移す場合はJSONバックアップを使ってください。', deleteAllTitle: 'このブラウザーの記録をすべて削除', deleteAllBody: 'アイテムと履歴を削除します。言語や並び順の設定は残ります。', deleteAllData: 'すべて削除', csvSaved: '履歴CSVを保存しました', jsonSaved: 'JSONバックアップを保存しました', noHistoryForCsv: 'CSVへ書き出す履歴がありません。', backupExportFailed: 'バックアップを書き出せませんでした。', restoreFileInvalid: 'このバックアップを読み込めません。ファイル形式か内容を確認してください。', restoreFileTooLarge: 'バックアップファイルが大きすぎます。25 MB以下のJSONを選んでください。', restoreDialogTitle: 'バックアップを復元', restoreSummaryLabel: 'バックアップの内容', restoreFileMeta: '{date} に書き出し', restoreModeTitle: '復元方法を選んでください。', restoreMergeTitle: '追加する', restoreMergeBody: '現在のデータを残して追加します。同じIDのアイテムと履歴は現在のデータを優先します。', restoreReplaceTitle: '置き換える', restoreReplaceBody: '現在のアイテムと履歴を削除して、このバックアップだけに置き換えます。', restoreAction: '復元する', restoreReplaceConfirmTitle: '現在の記録を置き換えますか？', restoreReplaceConfirmBody: 'このブラウザーの現在のアイテムと履歴を削除して、選択したバックアップに置き換えます。', restoreReplaceConfirm: '置き換える', restoreSucceeded: '{items}件のアイテム・{events}件の履歴を復元しました', restoreMerged: '追加しました：アイテム {items}件、履歴 {events}件', restoreFailed: 'バックアップを復元できませんでした。', deleteAllConfirmTitle: 'すべての記録を削除しますか？', deleteAllConfirmBody: 'このブラウザーに保存したすべてのアイテムと履歴を削除します。この操作は元に戻せません。', deleteAllConfirm: 'すべて削除', allDataDeleted: 'すべてのアイテムと履歴を削除しました', deleteAllFailed: '記録を削除できませんでした。',
+          itemsTitle: '記録するもの', itemsCount: '{count}件をこのブラウザーに保存', itemsFilteredCount: '{total}件中 {count}件を表示', newTag: '新しいタグ', homeOverviewLabel: 'ホームの概要', overdueItems: '目安超過', dueTodayItems: '今日が目安', recentWeekRecords: '7日以内の記録', searchItems: '検索', searchItemsPlaceholder: '名前・記録内容・メモ', sortItems: '並び順', sortPriority: '目安優先', sortRecent: '最近記録した順', sortUpdated: '最近更新した順', sortName: '名前順', noMatchingItems: '一致するアイテムがありません', noMatchingItemsBody: '検索語を変えると、保存済みのアイテムを再表示できます。', recentRecordsTitle: '最近の記録', recentRecordsBody: 'このブラウザーに保存した直近5件です。', localCardTitle: '記録はこのブラウザー内', localCardBody: 'アイテムと履歴はこのブラウザーの保存領域に保存し、このアプリからサーバーへ送信しません。', scopeCardTitle: '記録をバックアップできます', scopeCardBody: '履歴のCSV保存とJSONバックアップ・復元で、記録を自分で保存・移行できます。', dataManagementTitle: 'データ管理', dataManagementBody: '記録を書き出したり、別端末へ移すためのバックアップを保存・復元できます。', dataSummaryLabel: '保存データの概要', dataItems: 'アイテム', dataEvents: '履歴', exportCsv: '履歴CSVを保存', exportJson: 'JSONバックアップを保存', restoreJson: 'JSONバックアップを復元', dataExportNote: 'CSVは履歴確認用です。アイテム設定や履歴を丸ごと移す場合はJSONバックアップを使ってください。', deleteAllTitle: 'このブラウザーの記録をすべて削除', deleteAllBody: 'アイテムと履歴を削除します。言語や並び順の設定は残ります。', deleteAllData: 'すべて削除', csvSaved: '履歴CSVを保存しました', jsonSaved: 'JSONバックアップを保存しました', noHistoryForCsv: 'CSVへ書き出す履歴がありません。', backupExportFailed: 'バックアップを書き出せませんでした。', restoreFileInvalid: 'このバックアップを読み込めません。ファイル形式か内容を確認してください。', restoreFileTooLarge: 'バックアップファイルが大きすぎます。25 MB以下のJSONを選んでください。', restoreDialogTitle: 'バックアップを復元', restoreSummaryLabel: 'バックアップの内容', restoreFileMeta: '{date} に書き出し', restoreModeTitle: '復元方法を選んでください。', restoreMergeTitle: '追加する', restoreMergeBody: '現在のデータを残して追加します。同じIDのアイテムと履歴は現在のデータを優先します。', restoreReplaceTitle: '置き換える', restoreReplaceBody: '現在のアイテムと履歴を削除して、このバックアップだけに置き換えます。', restoreAction: '復元する', restoreReplaceConfirmTitle: '現在の記録を置き換えますか？', restoreReplaceConfirmBody: 'このブラウザーの現在のアイテムと履歴を削除して、選択したバックアップに置き換えます。', restoreReplaceConfirm: '置き換える', restoreSucceeded: '{items}件のアイテム・{events}件の履歴を復元しました', restoreMerged: '追加しました：アイテム {items}件、履歴 {events}件', restoreFailed: 'バックアップを復元できませんでした。', restoreItemConflict: '同じIDで名前・作業内容・目安が異なるアイテムがあります。履歴を混ぜないため、追加を中止しました。別のブラウザーへ復元して内容を確認してください。', deleteAllConfirmTitle: 'すべての記録を削除しますか？', deleteAllConfirmBody: 'このブラウザーに保存したすべてのアイテムと履歴を削除します。この操作は元に戻せません。', deleteAllConfirm: 'すべて削除', allDataDeleted: 'すべてのアイテムと履歴を削除しました', deleteAllFailed: '記録を削除できませんでした。',
           createTitle: '新しいタグ', createBody: '1つの物と、そこで記録したい1つの行動を設定します。', back: '戻る', cancel: 'キャンセル', createTag: 'タグを作る', nameLabel: '名前', namePlaceholder: 'エアコンフィルター', nameHint: 'タグを開いたときに分かる短い名前がおすすめです。', actionLabel: '記録する内容', actionPlaceholder: '掃除した', actionHint: 'ボタンに「掃除したことを記録」のように表示されます。', intervalLabel: '目安', daysUnit: '日ごと（任意）', intervalHint: '目安値は詳細画面とタグURLに反映されます。', memoLabel: 'メモ', memoPlaceholder: 'リビング（任意）', memoHint: 'メモはこの端末だけに保存され、タグURLには入りません。', secretWarning: 'タグURLは秘密情報ではありません。パスワードや機密情報は入力しないでください。',
           requiredName: '名前を入力してください。', requiredAction: '記録する内容を入力してください。', invalidInterval: '目安は1〜3650日の整数で入力してください。', createFailed: 'アイテムを作成できませんでした。', created: 'タグを作成しました',
           backToList: '一覧へ', portableImported: 'タグURLからこの端末に追加しました', portableLocalPreferred: 'この端末で編集した情報を表示しています', lastRecord: '前回', elapsed: '前回から', recordCount: '記録回数', noRecord: 'まだ記録なし', today: '今日', daysAgo: '{count}日前', oneDayAgo: '1日前', countTimes: '{count}回', intervalValue: '目安 {count}日ごと', noInterval: '目安なし', suggestedTiming: '次の目安', statusNoInterval: '目安なし', statusNoIntervalNote: '必要なら「編集」から目安日数を設定できます。', statusNoRecord: 'まだ記録がありません', statusNoRecordNote: '最初の記録後に、次の目安を計算します。', statusInDays: 'あと{count}日', statusInOneDay: 'あと1日', statusDueToday: '今日が目安です', statusOverdue: '目安を{count}日過ぎています', statusFromLastRecord: '前回の記録から計算しています。',
@@ -2807,7 +2807,7 @@
           helpPrivacyTitle: 'Privacy', helpPrivacyBody: 'Items and history are stored in this browser and are not sent to a server by this app.', helpNotesTitle: 'Notes', helpNoteStorage: 'Clearing browser site data can remove your records. Use Data management to save a JSON backup of important records.', helpNoteSecret: 'Tag URLs are not secret. Do not put passwords or sensitive information in item/action fields.', helpNoteNfc: 'On a compatible Android browser, the HTTPS version can read and write NFC tags. On iPhone Safari or unsupported browsers, open a prepared URL tag through the OS or scan the QR code instead.', helpOffline: 'The distributed HTML uses no runtime CDN or external API. User record data is processed fully locally.',
           introTitle: 'Tap the object, check the previous time, record the action', lead: 'Open cleaning, replacement, inspection and other logs from a tag URL dedicated to that physical object.', localBadge: 'Fully local processing',
           loading: 'Loading local records…', emptyTitle: 'Create your first tag', emptyBody: 'Register something where you want to remember the last cleaning, replacement, inspection, or similar action.', createFirst: 'Create first tag',
-          itemsTitle: 'Items', itemsCount: '{count} saved in this browser', itemsFilteredCount: 'Showing {count} of {total}', newTag: 'New tag', homeOverviewLabel: 'Home overview', overdueItems: 'Past interval', dueTodayItems: 'Suggested today', recentWeekRecords: 'Records in 7 days', searchItems: 'Search', searchItemsPlaceholder: 'Name, action, or memo', sortItems: 'Sort', sortPriority: 'Suggested timing', sortRecent: 'Recently recorded', sortUpdated: 'Recently updated', sortName: 'Name', noMatchingItems: 'No matching items', noMatchingItemsBody: 'Change the search text to show your saved items again.', recentRecordsTitle: 'Recent records', recentRecordsBody: 'The five most recent records saved in this browser.', localCardTitle: 'Records stay in this browser', localCardBody: 'Items and history are stored in this browser. This app does not send them to a server.', scopeCardTitle: 'Back up and move your records', scopeCardBody: 'Save history as CSV, or use JSON backup and restore to move your local records.', dataManagementTitle: 'Data management', dataManagementBody: 'Export records, or save and restore a backup when moving data to another browser or device.', dataSummaryLabel: 'Saved data summary', dataItems: 'Items', dataEvents: 'Records', exportCsv: 'Save history CSV', exportJson: 'Save JSON backup', restoreJson: 'Restore JSON backup', dataExportNote: 'CSV is for reviewing history. Use the JSON backup to move complete item settings and history.', deleteAllTitle: 'Delete all records in this browser', deleteAllBody: 'Deletes items and history. Language and sort preferences remain.', deleteAllData: 'Delete all', csvSaved: 'History CSV saved', jsonSaved: 'JSON backup saved', noHistoryForCsv: 'There is no history to export to CSV.', backupExportFailed: 'Could not export the backup.', restoreFileInvalid: 'Could not read this backup. Check the file format and contents.', restoreFileTooLarge: 'The backup file is too large. Choose a JSON file up to 25 MB.', restoreDialogTitle: 'Restore backup', restoreSummaryLabel: 'Backup contents', restoreFileMeta: 'Exported {date}', restoreModeTitle: 'Choose how to restore this backup.', restoreMergeTitle: 'Add to current data', restoreMergeBody: 'Keeps current data and adds new IDs. Current items and records win when an ID already exists.', restoreReplaceTitle: 'Replace current data', restoreReplaceBody: 'Deletes current items and history, then replaces them with this backup.', restoreAction: 'Restore', restoreReplaceConfirmTitle: 'Replace current records?', restoreReplaceConfirmBody: 'This deletes the items and history currently saved in this browser and replaces them with the selected backup.', restoreReplaceConfirm: 'Replace', restoreSucceeded: 'Restored {items} items and {events} records', restoreMerged: 'Added {items} items and {events} records', restoreFailed: 'Could not restore the backup.', deleteAllConfirmTitle: 'Delete all records?', deleteAllConfirmBody: 'This deletes every item and history record saved in this browser. This action cannot be undone.', deleteAllConfirm: 'Delete all', allDataDeleted: 'All items and history deleted', deleteAllFailed: 'Could not delete the records.',
+          itemsTitle: 'Items', itemsCount: '{count} saved in this browser', itemsFilteredCount: 'Showing {count} of {total}', newTag: 'New tag', homeOverviewLabel: 'Home overview', overdueItems: 'Past interval', dueTodayItems: 'Suggested today', recentWeekRecords: 'Records in 7 days', searchItems: 'Search', searchItemsPlaceholder: 'Name, action, or memo', sortItems: 'Sort', sortPriority: 'Suggested timing', sortRecent: 'Recently recorded', sortUpdated: 'Recently updated', sortName: 'Name', noMatchingItems: 'No matching items', noMatchingItemsBody: 'Change the search text to show your saved items again.', recentRecordsTitle: 'Recent records', recentRecordsBody: 'The five most recent records saved in this browser.', localCardTitle: 'Records stay in this browser', localCardBody: 'Items and history are stored in this browser. This app does not send them to a server.', scopeCardTitle: 'Back up and move your records', scopeCardBody: 'Save history as CSV, or use JSON backup and restore to move your local records.', dataManagementTitle: 'Data management', dataManagementBody: 'Export records, or save and restore a backup when moving data to another browser or device.', dataSummaryLabel: 'Saved data summary', dataItems: 'Items', dataEvents: 'Records', exportCsv: 'Save history CSV', exportJson: 'Save JSON backup', restoreJson: 'Restore JSON backup', dataExportNote: 'CSV is for reviewing history. Use the JSON backup to move complete item settings and history.', deleteAllTitle: 'Delete all records in this browser', deleteAllBody: 'Deletes items and history. Language and sort preferences remain.', deleteAllData: 'Delete all', csvSaved: 'History CSV saved', jsonSaved: 'JSON backup saved', noHistoryForCsv: 'There is no history to export to CSV.', backupExportFailed: 'Could not export the backup.', restoreFileInvalid: 'Could not read this backup. Check the file format and contents.', restoreFileTooLarge: 'The backup file is too large. Choose a JSON file up to 25 MB.', restoreDialogTitle: 'Restore backup', restoreSummaryLabel: 'Backup contents', restoreFileMeta: 'Exported {date}', restoreModeTitle: 'Choose how to restore this backup.', restoreMergeTitle: 'Add to current data', restoreMergeBody: 'Keeps current data and adds new IDs. Current items and records win when an ID already exists.', restoreReplaceTitle: 'Replace current data', restoreReplaceBody: 'Deletes current items and history, then replaces them with this backup.', restoreAction: 'Restore', restoreReplaceConfirmTitle: 'Replace current records?', restoreReplaceConfirmBody: 'This deletes the items and history currently saved in this browser and replaces them with the selected backup.', restoreReplaceConfirm: 'Replace', restoreSucceeded: 'Restored {items} items and {events} records', restoreMerged: 'Added {items} items and {events} records', restoreFailed: 'Could not restore the backup.', restoreItemConflict: 'An item with the same ID has different name, action or interval settings. Nothing was added to avoid mixing histories. Restore in a separate browser to review the differences.', deleteAllConfirmTitle: 'Delete all records?', deleteAllConfirmBody: 'This deletes every item and history record saved in this browser. This action cannot be undone.', deleteAllConfirm: 'Delete all', allDataDeleted: 'All items and history deleted', deleteAllFailed: 'Could not delete the records.',
           createTitle: 'New tag', createBody: 'Set one physical item and one action to record there.', back: 'Back', cancel: 'Cancel', createTag: 'Create tag', nameLabel: 'Name', namePlaceholder: 'Air conditioner filter', nameHint: 'Use a short name that is easy to recognize when the tag opens.', actionLabel: 'Action to record', actionPlaceholder: 'Cleaned', actionHint: 'The button will say something like “Record Cleaned”.', intervalLabel: 'Suggested interval', daysUnit: 'days (optional)', intervalHint: 'This value appears on the detail screen and in the tag URL.', memoLabel: 'Memo', memoPlaceholder: 'Living room (optional)', memoHint: 'The memo stays only on this device and is not included in the tag URL.', secretWarning: 'The tag URL is not secret. Do not enter passwords or sensitive information.',
           requiredName: 'Enter a name.', requiredAction: 'Enter an action.', invalidInterval: 'Enter an integer from 1 to 3650 days.', createFailed: 'Could not create the item.', created: 'Tag created',
           backToList: 'Items', portableImported: 'Added to this browser from a tag URL', portableLocalPreferred: 'Showing information edited in this browser', lastRecord: 'Last record', elapsed: 'Elapsed', recordCount: 'Records', noRecord: 'No records yet', today: 'Today', daysAgo: '{count} days ago', oneDayAgo: '1 day ago', countTimes: '{count}', intervalValue: 'Every {count} days', noInterval: 'No interval', suggestedTiming: 'Suggested timing', statusNoInterval: 'No interval', statusNoIntervalNote: 'Set an interval from Edit if you want timing guidance.', statusNoRecord: 'No records yet', statusNoRecordNote: 'The next suggested time will be calculated after the first record.', statusInDays: '{count} days to go', statusInOneDay: '1 day to go', statusDueToday: 'Today is the suggested time', statusOverdue: '{count} days past the suggested interval', statusFromLastRecord: 'Calculated from the latest record.',
@@ -2975,6 +2975,31 @@
       function txDone(tx) { return new Promise((resolve, reject) => { tx.oncomplete = resolve; tx.onerror = () => reject(tx.error); tx.onabort = () => reject(tx.error || new Error('Transaction aborted')); }); }
       async function getItem(id) { const tx = db.transaction('items', 'readonly'); return requestResult(tx.objectStore('items').get(id)); }
       async function putItem(item) { const tx = db.transaction('items', 'readwrite'); tx.objectStore('items').put(item); await txDone(tx); return item; }
+      // History and the item's updated timestamp must commit together.
+      async function addRecordAndUpdateItem(item, event) {
+        const tx = db.transaction(['items', 'events'], 'readwrite');
+        tx.objectStore('events').add(event);
+        tx.objectStore('items').put(item);
+        await txDone(tx);
+      }
+      // Existing events may predate per-event name/action snapshots. Freeze their
+      // previous labels in the same transaction as an item edit.
+      async function saveItemAndSnapshotLegacyHistory(updatedItem, previousItem) {
+        const tx = db.transaction(['items', 'events'], 'readwrite');
+        tx.objectStore('items').put(updatedItem);
+        const request = tx.objectStore('events').index('itemId').openCursor(IDBKeyRange.only(updatedItem.id));
+        request.onsuccess = () => {
+          const cursor = request.result;
+          if (!cursor) return;
+          const record = { ...cursor.value };
+          let changed = false;
+          if (record.itemName == null) { record.itemName = previousItem.name; changed = true; }
+          if (record.actionLabel == null) { record.actionLabel = previousItem.actionLabel; changed = true; }
+          if (changed) cursor.update(record);
+          cursor.continue();
+        };
+        await txDone(tx);
+      }
       async function getAllItems() { const tx = db.transaction('items', 'readonly'); return requestResult(tx.objectStore('items').getAll()); }
       async function addEvent(event) { const tx = db.transaction('events', 'readwrite'); tx.objectStore('events').add(event); await txDone(tx); return event; }
       async function putEvent(event) { const tx = db.transaction('events', 'readwrite'); tx.objectStore('events').put(event); await txDone(tx); return event; }
@@ -3009,7 +3034,18 @@
       }
       async function mergeBackupRecords(items, events) {
         const [existingItems, existingEvents] = await Promise.all([getAllItems(), getAllEvents()]);
-        const itemIds = new Set(existingItems.map(item => String(item.id))); const eventIds = new Set(existingEvents.map(event => String(event.id)));
+        const existingById = new Map(existingItems.map(item => [String(item.id), item]));
+        // A matching ID can refer to different item/action settings after edits on
+        // separate devices. Do not silently attach one device's history to the other.
+        for (const item of items) {
+          const existing = existingById.get(String(item.id));
+          if (existing && (existing.name !== item.name || existing.actionLabel !== item.actionLabel || (existing.intervalDays ?? null) !== (item.intervalDays ?? null))) {
+            const error = new Error('Conflicting item in backup');
+            error.code = 'BACKUP_ITEM_CONFLICT';
+            throw error;
+          }
+        }
+        const itemIds = new Set(existingById.keys()); const eventIds = new Set(existingEvents.map(event => String(event.id)));
         const tx = db.transaction(['items', 'events'], 'readwrite');
         const itemStore = tx.objectStore('items'); const eventStore = tx.objectStore('events');
         let itemsAdded = 0; let eventsAdded = 0;
@@ -3061,7 +3097,12 @@
         const date = new Date(value); if (Number.isNaN(date.getTime())) return '';
         const offset = date.getTimezoneOffset() * 60000; return new Date(date.getTime() - offset).toISOString().slice(0, 16);
       }
-      function daysBetween(now, then) { return Math.max(0, Math.floor((now.getTime() - then.getTime()) / 86400000)); }
+      function daysBetween(now, then) {
+        // Use local calendar dates instead of elapsed 24-hour periods, including
+        // across daylight-saving changes and records made late at night.
+        const day = value => Date.UTC(value.getFullYear(), value.getMonth(), value.getDate());
+        return Math.max(0, Math.round((day(now) - day(then)) / 86400000));
+      }
       function elapsedLabel(value) {
         if (!value) return tr('noRecord'); const days = daysBetween(new Date(), new Date(value)); if (days === 0) return tr('today'); if (days === 1) return tr('oneDayAgo'); return tr('daysAgo', { count: days });
       }
@@ -3267,13 +3308,21 @@
       async function recordCurrentItem() {
         if (!db || !currentItem || recordBusy) return;
         const attemptAt = Date.now(); if (attemptAt - lastRecordAttemptAt < 1200) return; lastRecordAttemptAt = attemptAt;
+        const now = new Date().toISOString();
+        const item = { ...currentItem, updatedAt: now };
+        const event = { id: randomId(12), itemId: item.id, itemName: item.name, actionLabel: item.actionLabel, performedAt: now, note: $('#recordNote').value.trim(), source: currentOpenSource, createdAt: now };
         recordBusy = true; renderDetail();
-        const now = new Date().toISOString(); const event = { id: randomId(12), itemId: currentItem.id, performedAt: now, note: $('#recordNote').value.trim(), source: currentOpenSource, createdAt: now };
         try {
-          await addEvent(event); currentEvents.unshift(event); currentItem.updatedAt = now; await putItem(currentItem); portableJustImported = false; $('#recordNote').value = ''; renderDetail();
+          await addRecordAndUpdateItem(item, event);
+          if (currentItem?.id === item.id) {
+            currentItem = item;
+            currentEvents = [event, ...currentEvents].sort((a, b) => String(b.performedAt).localeCompare(String(a.performedAt)));
+            portableJustImported = false;
+            $('#recordNote').value = '';
+            renderDetail();
+          }
           showToast(tr('recorded'), { tone: 'success', actionLabel: tr('undo'), duration: 5200, onAction: async () => { try { await deleteEvent(event.id); await reloadCurrentEvents(); showToast(tr('recordUndone')); } catch (error) { console.error(error); showToast(tr('recordFailed'), { tone: 'warning' }); } } });
-        }
-        catch (error) { console.error(error); showToast(tr('recordFailed'), { tone: 'warning' }); }
+        } catch (error) { console.error(error); lastRecordAttemptAt = 0; showToast(tr('recordFailed'), { tone: 'warning' }); }
         finally { recordBusy = false; renderDetail(); }
       }
       function openItemEdit() {
@@ -3291,8 +3340,18 @@
       }
       async function saveItemEdit(event) {
         event.preventDefault(); if (!currentItem) return; const values = validateEditItemForm(); if (!values.valid) return;
-        try { Object.assign(currentItem, { name: values.name, actionLabel: values.actionLabel, intervalDays: values.intervalDays, memo: values.memo, updatedAt: new Date().toISOString() }); await putItem(currentItem); $('#itemEditDialog').close(); renderDetail(); showToast(tr('itemUpdated'), { tone: 'success' }); }
-        catch (error) { console.error(error); showToast(tr('itemUpdateFailed'), { tone: 'warning' }); }
+        const previousItem = currentItem;
+        const updatedItem = { ...previousItem, name: values.name, actionLabel: values.actionLabel, intervalDays: values.intervalDays, memo: values.memo, updatedAt: new Date().toISOString() };
+        try {
+          await saveItemAndSnapshotLegacyHistory(updatedItem, previousItem);
+          currentItem = updatedItem;
+          currentEvents = currentEvents.map(record => ({
+            ...record,
+            itemName: record.itemName ?? previousItem.name,
+            actionLabel: record.actionLabel ?? previousItem.actionLabel
+          }));
+          $('#itemEditDialog').close(); renderDetail(); showToast(tr('itemUpdated'), { tone: 'success' });
+        } catch (error) { console.error(error); showToast(tr('itemUpdateFailed'), { tone: 'warning' }); }
       }
       async function deleteCurrentItem() {
         if (!currentItem) return; $('#itemEditDialog').close();
@@ -3699,7 +3758,7 @@
           const rows = [['item', 'action', 'date', 'note'].join(',')];
           for (const event of events) {
             const item = itemMap.get(event.itemId) || { name: '', actionLabel: '' };
-            rows.push([item.name, item.actionLabel, event.performedAt, event.note || ''].map(csvCell).join(','));
+            rows.push([event.itemName ?? item.name, event.actionLabel ?? item.actionLabel, event.performedAt, event.note || ''].map(csvCell).join(','));
           }
           downloadBlob(new Blob(['\uFEFF' + rows.join('\r\n') + '\r\n'], { type: 'text/csv;charset=utf-8' }), safeExportFilename($('#csvFilename').value, 'csv', 'nfc-tap-log-history'));
           showToast(tr('csvSaved'), { tone: 'success' });
@@ -3732,8 +3791,14 @@
         const itemId = String(value.itemId || ''); if (!itemIds.has(itemId)) throw new Error('Orphan event');
         if (!validIsoDate(value.performedAt) || !validIsoDate(value.createdAt)) throw new Error('Invalid event date');
         const note = typeof value.note === 'string' ? value.note : ''; if ([...note].length > 500) throw new Error('Invalid event note');
+        // Snapshot fields are optional for backups created before v1.0.3.
+        const itemName = value.itemName == null ? null : value.itemName;
+        const actionLabel = value.actionLabel == null ? null : value.actionLabel;
+        if (itemName !== null && (typeof itemName !== 'string' || !itemName.trim() || [...itemName].length > ITEM_NAME_MAX)) throw new Error('Invalid event item name');
+        if (actionLabel !== null && (typeof actionLabel !== 'string' || !actionLabel.trim() || [...actionLabel].length > ACTION_MAX)) throw new Error('Invalid event action');
         const source = typeof value.source === 'string' && ['manual', 'link', 'web-nfc'].includes(value.source) ? value.source : 'manual';
-        return { id, itemId, performedAt: new Date(value.performedAt).toISOString(), note, source, createdAt: new Date(value.createdAt).toISOString() };
+        return { id, itemId, performedAt: new Date(value.performedAt).toISOString(), note, source, createdAt: new Date(value.createdAt).toISOString(),
+          ...(itemName === null ? {} : { itemName }), ...(actionLabel === null ? {} : { actionLabel }) };
       }
       function validateBackupDocument(value) {
         if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Invalid backup root');
@@ -3798,7 +3863,7 @@
             const result = await mergeBackupRecords(restore.backup.items, restore.backup.events);
             await refreshHomeSummary(); restoreBusy = false; closeRestoreDialog(); showToast(tr('restoreMerged', { items: result.itemsAdded, events: result.eventsAdded }), { tone: 'success', duration: 4800 });
           }
-        } catch (error) { console.error('Restore failed', error); $('#restoreError').textContent = tr('restoreFailed'); }
+        } catch (error) { console.error('Restore failed', error); $('#restoreError').textContent = tr(error?.code === 'BACKUP_ITEM_CONFLICT' ? 'restoreItemConflict' : 'restoreFailed'); }
         finally { restoreBusy = false; controlIds.forEach(id => { $(id).disabled = false; }); }
       }
       async function deleteAllData() {
@@ -3862,6 +3927,8 @@
 
       function bindUi() {
         window.addEventListener('afterprint', clearPrintMode);
+        // Tag URLs can also arrive while this tab is already open.
+        window.addEventListener('hashchange', () => { if (db && location.hash && location.hash !== '#') importPortableFromHash(); });
         $('#languageButton').addEventListener('click', () => { language = language === 'ja' ? 'en' : 'ja'; writeStorage(storageKeys.language, language); applyLanguage(); });
         const helpDialog = $('#helpDialog'); $('#helpButton').addEventListener('click', () => helpDialog.showModal()); $('#closeHelpButton').addEventListener('click', () => helpDialog.close()); helpDialog.addEventListener('click', event => { if (event.target !== event.currentTarget) return; const rect = helpDialog.getBoundingClientRect(); if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) helpDialog.close(); });
         $('#emptyCreateButton').addEventListener('click', () => { resetCreateForm(); showView('create'); $('#itemName').focus(); });
