@@ -341,3 +341,30 @@ test('Intervals use local calendar days and opened tabs recognize tag hash navig
   assert.match(fn('bindUi'), /addEventListener\('hashchange'/);
   assert.match(fn('bindUi'), /importPortableFromHash\(\)/);
 });
+
+
+test('Release workflow only publishes merged PR versions with built standalone assets', () => {
+  const workflow = fs.readFileSync(path.join(__dirname, '../.github/workflows/release-on-merge.yml'), 'utf8');
+  assert.match(workflow, /pull_request:\s*\n\s*types:\s*\[closed\]/);
+  assert.match(workflow, /pull_request\.merged == true/);
+  assert.match(workflow, /pull_request\.base\.ref == 'main'/);
+  assert.match(workflow, /contents:\s*write/);
+  assert.match(workflow, /scripts\/check-repository\.ps1/);
+  assert.match(workflow, /app\.config\.json/);
+  assert.match(workflow, /gh release view \$tag/);
+  assert.match(workflow, /gh release create \$tag/);
+  assert.match(workflow, /dist\/index\.html#nfc-tap-log\.html/);
+  assert.match(workflow, /dist\/index\.self-extract\.html#nfc-tap-log\.self-extract\.html/);
+});
+
+test('Phone layouts prioritize transfer actions and collapse filename/deletion controls', () => {
+  assert.match(source, /\.local-badge \{ display: none; \}/);
+  assert.match(source, /<details class="data-options" id="dataExportOptions">/);
+  assert.match(source, /<details class="data-danger-details" id="dataDangerDetails">/);
+  assert.match(source, /id="exportCsvButton"/);
+  assert.match(source, /id="exportJsonButton"/);
+  assert.match(source, /id="restoreJsonButton"/);
+  assert.match(source, /id="deleteAllDataButton"/);
+  assert.match(source, /dataBackupTitle: '記録を保存'/);
+  assert.match(source, /dataRestoreTitle: 'Restore a backup'/);
+});
