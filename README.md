@@ -25,6 +25,7 @@ GitHub Pages delivers the initial HTML. Item data, notes, history, QR generation
 - **Use QR as a fallback** — Generate, save, or print a QR code containing the same Portable Tag URL.
 - **Manage records locally** — Search, sort, edit history, add notes, delete with Undo, and edit items without requiring NFC.
 - **Back up and move data yourself** — Export history as CSV and save/restore a complete JSON backup.
+- **Get a backup reminder** — The home page suggests a JSON backup after 10 records or 30 days since the first record or last export. You can dismiss it for seven days.
 - **Japanese / English UI** — Both languages are included in the same HTML.
 - **No runtime CDN or cloud storage** — The distributed app keeps `connect-src 'none'` and includes the QR implementation locally.
 
