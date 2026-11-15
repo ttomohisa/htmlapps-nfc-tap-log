@@ -118,12 +118,13 @@ test('Every file export uses an editable filename with a fixed extension', () =>
 test('CSV and JSON exports use custom filenames and preserve complete backup records', async () => {
   const records = [{ id: 'item_0001', name: '=1+1', actionLabel: '掃除した', memo: 'fixture' }];
   const events = [{ id: 'event_0001', itemId: 'item_0001', performedAt: '2026-10-08T00:00:00.000Z', note: '+SUM(A1)' }];
-  const downloads = [];
+  const downloads = [], exportCounts = [];
   const c = sandbox(['safeExportFilename', 'csvCell', 'exportHistoryCsv', 'createBackupDocument', 'exportJsonBackup'], {
     APP_CONFIG: { slug: 'nfc-tap-log', version: '1.0.1' }, Blob,
     $: id => ({ value: id === '#csvFilename' ? '台所.CSV' : 'weekly.json' }),
     getAllItems: async () => records, getAllEvents: async () => events,
     tr: key => key, showToast() {}, downloadBlob: (blob, filename) => downloads.push({ blob, filename }),
+    markBackupDownloadInitiated: count => exportCounts.push(count)
   });
   await c.exportHistoryCsv(); await c.exportJsonBackup();
   assert.equal(downloads[0].filename, '台所.csv');
@@ -131,6 +132,7 @@ test('CSV and JSON exports use custom filenames and preserve complete backup rec
   assert.equal(downloads[1].filename, 'weekly.json');
   const backup = JSON.parse(await downloads[1].blob.text());
   assert.deepEqual(backup.items, records); assert.deepEqual(backup.events, events);
+  assert.deepEqual(exportCounts, [1], 'Only a JSON download updates the reminder baseline');
 });
 
 test('QR export captures its custom filename before asynchronous PNG generation', async () => {
@@ -367,4 +369,69 @@ test('Phone layouts prioritize transfer actions and collapse filename/deletion c
   assert.match(source, /id="deleteAllDataButton"/);
   assert.match(source, /dataBackupTitle: '記録を保存'/);
   assert.match(source, /dataRestoreTitle: 'Restore a backup'/);
+});
+
+
+test('Backup reminder starts after 10 records or 30 days, not on an empty or fresh history', () => {
+  const now = Date.UTC(2026, 10, 15, 0, 0);
+  let stored = null;
+  const c = sandbox(['readBackupReminderState', 'getBackupReminderStatus'], {
+    storageKeys: { backupReminder: 'test:backup' },
+    readStorage: () => stored
+  });
+  vm.runInContext('const BACKUP_REMINDER_DAYS = 30, BACKUP_REMINDER_EVENTS = 10, MS_PER_DAY = 86400000; let backupReminderDismissedThisSession = false;', c);
+  const event = (createdAt = new Date(now).toISOString()) => ({ createdAt });
+  assert.equal(c.getBackupReminderStatus([], now), null);
+  assert.equal(c.getBackupReminderStatus(Array(9).fill(event()), now), null);
+  assert.equal(c.getBackupReminderStatus(Array(10).fill(event()), now).key, 'backupReminderNoExport');
+  assert.equal(c.getBackupReminderStatus([event(new Date(now - 31 * 86400000).toISOString())], now).key, 'backupReminderNoExportAge');
+  assert.equal(c.getBackupReminderStatus([event(new Date(now + 31 * 86400000).toISOString())], now), null);
+
+  stored = JSON.stringify({ lastExportAt: now - 3 * 86400000, eventCountAtExport: 2, snoozedUntil: 0 });
+  assert.equal(c.getBackupReminderStatus(Array(11).fill(event()), now), null);
+  assert.equal(c.getBackupReminderStatus(Array(12).fill(event()), now).key, 'backupReminderNewRecords');
+  stored = JSON.stringify({ lastExportAt: now - 31 * 86400000, eventCountAtExport: 11, snoozedUntil: 0 });
+  assert.equal(c.getBackupReminderStatus(Array(11).fill(event()), now).key, 'backupReminderElapsed');
+  stored = JSON.stringify({ lastExportAt: now - 31 * 86400000, eventCountAtExport: 0, snoozedUntil: now + 7 * 86400000 });
+  assert.equal(c.getBackupReminderStatus(Array(30).fill(event()), now), null);
+  assert.equal(c.getBackupReminderStatus(Array(30).fill(event()), now + 8 * 86400000).key, 'backupReminderNewRecords');
+  stored = '{not valid JSON';
+  assert.equal(c.getBackupReminderStatus(Array(10).fill(event()), now).key, 'backupReminderNoExport');
+});
+
+test('Snoozing backup reminder is local, seven days long, and survives a refresh', () => {
+  let saved = '', reminder = { hidden: false }, stateText = { textContent: '' };
+  const c = sandbox(['readBackupReminderState', 'getBackupReminderStatus', 'renderBackupReminder', 'snoozeBackupReminder'], {
+    storageKeys: { backupReminder: 'test:backup' },
+    readStorage: () => saved,
+    writeStorage: (_key, value) => { saved = value; },
+    $: id => id === '#backupReminder' ? reminder : stateText,
+    tr: key => key
+  });
+  vm.runInContext('const BACKUP_REMINDER_DAYS = 30, BACKUP_REMINDER_EVENTS = 10, BACKUP_REMINDER_SNOOZE_DAYS = 7, MS_PER_DAY = 86400000; let backupReminderDismissedThisSession = false; const homeSnapshot = { events: Array(10).fill({createdAt: new Date().toISOString()}) };', c);
+  c.renderBackupReminder(Array(10).fill({ createdAt: new Date().toISOString() }));
+  assert.equal(reminder.hidden, false);
+  c.snoozeBackupReminder();
+  assert.equal(reminder.hidden, true);
+  assert.ok(JSON.parse(saved).snoozedUntil >= Date.now() + 6 * 86400000);
+  vm.runInContext('backupReminderDismissedThisSession = false;', c);
+  c.renderBackupReminder(Array(10).fill({ createdAt: new Date().toISOString() }));
+  assert.equal(reminder.hidden, true, 'A new session still respects the stored snooze');
+});
+
+test('Failed JSON downloads do not change backup reminder state and CSV does not mark an export', async () => {
+  const events = [{ id: 'event_0001' }], items = [{ id: 'item_0001' }];
+  let marked = 0;
+  const c = sandbox(['safeExportFilename', 'createBackupDocument', 'exportJsonBackup'], {
+    APP_CONFIG: { slug: 'nfc-tap-log', version: '1.0.3' }, Blob,
+    $: () => ({ value: 'test-backup' }), getAllItems: async () => items, getAllEvents: async () => events,
+    markBackupDownloadInitiated: () => marked++, downloadBlob: () => { throw new Error('Download failed'); },
+    tr: key => key, showToast() {}
+  });
+  await c.exportJsonBackup();
+  assert.equal(marked, 0);
+  assert.doesNotMatch(fn('exportHistoryCsv'), /markBackupDownloadInitiated/);
+  assert.match(fn('deleteAllData'), /storageKeys\.backupReminder/);
+  assert.match(source, /id="backupReminderSaveButton"/);
+  assert.match(source, /id="backupReminderLaterButton"/);
 });
