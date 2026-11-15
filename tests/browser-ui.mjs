@@ -39,6 +39,9 @@ try {
     }
     assert.equal(await page.locator('#languageButton').textContent(), 'JA');
     assert.equal(await page.locator('#languageButton').getAttribute('title'), 'Switch to Japanese');
+    assert.equal(await page.locator('.local-badge').isVisible(), viewport.width > 720, 'Local badge hidden only on phones');
+    assert.equal(await page.locator('#dataExportOptions').evaluate(node => node.open), false, 'Filename controls start collapsed');
+    assert.equal(await page.locator('#dataDangerDetails').evaluate(node => node.open), false, 'Delete controls start collapsed');
     await page.locator('#emptyCreateButton').click();
     await page.locator('#createSubmitButton').click();
     assert.ok(await page.locator('#nameError').textContent());
@@ -62,10 +65,12 @@ try {
     const png = await download('#saveQrButton', '台所QR.png');
     assert.deepEqual([...png.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
     await page.locator('#detailBackButton').click();
+    await page.locator('#dataExportOptions summary').click();
     await page.locator('#csvFilename').fill('台所.CSV');
     const csv = await download('#exportCsvButton', '台所.csv');
     assert.ok(csv.toString('utf8').includes("'=1+1,Cleaned,"));
     assert.ok(csv.toString('utf8').includes("'+SUM(A1)"));
+    assert.equal(await page.locator('#dataDangerDetails').evaluate(node => node.open), false, 'Delete section stays collapsed during export');
     await page.locator('#jsonFilename').fill('maintenance.json');
     const backup = JSON.parse((await download('#exportJsonButton', 'maintenance.json')).toString('utf8'));
     assert.equal(backup.items[0].name, '=1+1'); assert.equal(backup.events[0].note, '+SUM(A1)');
