@@ -105,6 +105,56 @@ try {
     assert.ok(helpGeometry.y >= 0 && helpGeometry.y + helpGeometry.height <= viewport.height + 1);
     await page.keyboard.press('Escape');
     assert.equal(await page.locator('#helpDialog').isVisible(), false);
+    // In-browser reminder: generated test records only, no NFC hardware or network.
+    await page.evaluate(async () => {
+      const db = await new Promise((resolve, reject) => {
+        const request = indexedDB.open('nfc-tap-log:db');
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      const read = db.transaction('items', 'readonly').objectStore('items').getAll();
+      const items = await new Promise((resolve, reject) => {
+        read.onsuccess = () => resolve(read.result);
+        read.onerror = () => reject(read.error);
+      });
+      const tx = db.transaction('events', 'readwrite');
+      for (let i = 0; i < 12; i++) {
+        const now = new Date().toISOString();
+        tx.objectStore('events').put({
+          id: 'event_reminder_' + String(i).padStart(2, '0'),
+          itemId: items[0].id, performedAt: now, createdAt: now,
+          note: 'Reminder regression', source: 'manual'
+        });
+      }
+      await new Promise((resolve, reject) => {
+        tx.oncomplete = resolve;
+        tx.onerror = () => reject(tx.error);
+        tx.onabort = () => reject(tx.error);
+      });
+      db.close();
+    });
+    await page.reload({ waitUntil: 'networkidle' });
+    await page.locator('#backupReminder').waitFor({ state: 'visible' });
+    await page.locator('#backupReminderLaterButton').click();
+    await page.locator('#backupReminder').waitFor({ state: 'hidden' });
+    await page.reload({ waitUntil: 'networkidle' });
+    await page.locator('#itemList .item-row').first().waitFor({ state: 'visible' });
+    assert.equal(await page.locator('#backupReminder').isVisible(), false, '7-day snooze survives reload');
+    await page.evaluate(() => {
+      const key = 'nfc-tap-log:backup-reminder';
+      const state = JSON.parse(localStorage.getItem(key));
+      state.snoozedUntil = 0;
+      localStorage.setItem(key, JSON.stringify(state));
+    });
+    await page.reload({ waitUntil: 'networkidle' });
+    await page.locator('#backupReminder').waitFor({ state: 'visible' });
+    const reminderDownload = page.waitForEvent('download');
+    await page.locator('#backupReminderSaveButton').click();
+    assert.ok((await reminderDownload).suggestedFilename().endsWith('.json'));
+    await page.locator('#backupReminder').waitFor({ state: 'hidden' });
+    await page.reload({ waitUntil: 'networkidle' });
+    await page.locator('#itemList .item-row').first().waitFor({ state: 'visible' });
+    assert.equal(await page.locator('#backupReminder').isVisible(), false, 'Successful JSON export updates reminder baseline');
     await page.screenshot({ path: `test-results/home-${viewport.width}.png`, fullPage: true });
     assert.deepEqual(errors, []); assert.deepEqual(externalRequests, []);
     for (const url of [base + '/compressed', ...['../dist/index.html', '../nfc-tap-log.html', '../dist/index.self-extract.html'].map(relative => new URL(relative, import.meta.url).href)]) {
