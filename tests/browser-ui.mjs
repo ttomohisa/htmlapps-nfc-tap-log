@@ -42,6 +42,10 @@ try {
     assert.equal(await page.locator('.local-badge').isVisible(), viewport.width > 720, 'Local badge hidden only on phones');
     assert.equal(await page.locator('#dataExportOptions').evaluate(node => node.open), false, 'Filename controls start collapsed');
     assert.equal(await page.locator('#dataDangerDetails').evaluate(node => node.open), false, 'Delete controls start collapsed');
+    assert.equal(await page.locator('#dataBackupTask').isVisible(), false, 'No empty backup action');
+    assert.equal(await page.locator('#dataCsvRow').isVisible(), false, 'No CSV action before recording');
+    assert.equal(await page.locator('#dataDangerDetails').isVisible(), false, 'No delete action when nothing is saved');
+    assert.equal(await page.locator('#restoreJsonButton').isVisible(), true, 'Restore stays available for an empty browser');
     await page.locator('#emptyCreateButton').click();
     await page.locator('#createSubmitButton').click();
     assert.ok(await page.locator('#nameError').textContent());
