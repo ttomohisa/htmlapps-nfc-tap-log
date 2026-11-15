@@ -80,6 +80,8 @@ If a Portable Tag URL uses an existing item ID but contains older item details t
 
 ## Backup and restore
 
+The home page shows a backup reminder after 10 records, or 30 days since the first record or last JSON export. **Later** hides it for seven days. CSV export does not reset this reminder. The browser cannot confirm that a downloaded file was retained, so the reminder tracks the JSON download action.
+
 **History CSV** is a flat export for spreadsheets or reporting. It is saved as UTF-8 with a BOM and is not a restore format.
 
 **JSON backup** contains complete item settings and event history, including items that have no records yet. Restore provides two modes:
