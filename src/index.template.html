@@ -4012,7 +4012,13 @@
         if (!homeSnapshot.items.length && !homeSnapshot.events.length) return;
         const confirmed = await AppConfirm.ask({ title: tr('deleteAllConfirmTitle'), message: tr('deleteAllConfirmBody'), confirmLabel: tr('deleteAllConfirm'), tone: 'danger' });
         if (!confirmed) return;
-        try { await clearAllRecords(); currentItem = null; currentItemId = null; currentEvents = []; homeSearchQuery = ''; await refreshHomeSummary(); showToast(tr('allDataDeleted'), { tone: 'success' }); }
+        try {
+          await clearAllRecords(); currentItem = null; currentItemId = null; currentEvents = []; homeSearchQuery = '';
+          // The old backup baseline does not apply to new records after a reset.
+          backupReminderDismissedThisSession = false;
+          writeStorage(storageKeys.backupReminder, '{}');
+          await refreshHomeSummary(); showToast(tr('allDataDeleted'), { tone: 'success' });
+        }
         catch (error) { console.error('Delete all failed', error); showToast(tr('deleteAllFailed'), { tone: 'warning' }); }
       }
       async function saveQrCode() {
