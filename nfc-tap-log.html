@@ -580,6 +580,23 @@
     .danger-zone strong { display: block; font-size: 13px; }
     .danger-zone p { margin: 4px 0 0; color: var(--muted); font-size: 11px; line-height: 1.6; }
     .data-danger-details .button { min-height: 42px; }
+    .backup-reminder { display:grid; grid-template-columns:auto minmax(0,1fr) auto auto; gap:10px; align-items:center; margin:14px 0 0; padding:11px 12px; border:1px solid var(--line); border-radius:12px; background:var(--surface-muted); }
+    .backup-reminder[hidden] { display:none; }
+    .backup-reminder-icon { display:grid; place-items:center; width:32px; height:32px; color:var(--accent); }
+    .backup-reminder-icon svg { width:19px; height:19px; }
+    .backup-reminder-copy { min-width:0; }
+    .backup-reminder-copy strong { display:block; font-size:12px; }
+    .backup-reminder-copy p { margin:3px 0 0; color:var(--muted); font-size:11px; line-height:1.55; }
+    .backup-reminder .button { min-height:39px; padding:7px 11px; font-size:12px; }
+    .backup-reminder-later { min-height:39px; padding:7px 8px; border:0; border-radius:8px; background:transparent; color:var(--muted); font-size:12px; cursor:pointer; white-space:nowrap; }
+    .backup-reminder-later:hover { color:var(--text); background:var(--surface-hover); }
+    @media (max-width:720px) {
+      .backup-reminder { grid-template-columns:minmax(0,1fr) auto; gap:9px; }
+      .backup-reminder-icon { display:none; }
+      .backup-reminder-copy { grid-column:1 / -1; }
+      .backup-reminder .button { justify-self:start; }
+      .backup-reminder-later { justify-self:end; }
+    }
     .backup-preview { display: grid; gap: 10px; }
     .backup-file { padding: 11px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-muted); overflow-wrap: anywhere; }
     .backup-file strong { display: block; font-size: 12px; }
@@ -998,6 +1015,12 @@
               <span class="data-summary-card"><strong id="dataItemCount">0</strong><span data-i18n="dataItems">アイテム</span></span>
               <span class="data-summary-card"><strong id="dataEventCount">0</strong><span data-i18n="dataEvents">履歴</span></span>
             </div>
+          </div>
+          <div class="backup-reminder" id="backupReminder" role="status" aria-live="polite" hidden>
+            <span class="backup-reminder-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-4-4 4 4 4-4M4 17v3h16v-3"/></svg></span>
+            <div class="backup-reminder-copy"><strong data-i18n="backupReminderTitle">バックアップの確認</strong><p id="backupReminderText"></p></div>
+            <button class="button secondary" id="backupReminderSaveButton" type="button" data-i18n="backupReminderSave">バックアップを保存</button>
+            <button class="backup-reminder-later" id="backupReminderLaterButton" type="button" data-i18n="backupReminderLater" data-i18n-title="backupReminderLaterTitle" title="7日間非表示にします">あとで</button>
           </div>
           <div class="data-main-actions">
             <div class="data-task" id="dataBackupTask">
@@ -2832,7 +2855,7 @@
           helpOffline: '配布HTMLは実行時CDNや外部APIを使いません。ユーザーの記録データは完全ローカル処理です。',
           introTitle: 'NFCやQRから作業の記録を開く', lead: '前回の掃除や交換の日付を確認して、作業が終わったら記録できます。', localBadge: '完全ローカル処理',
           loading: '端末内の記録を読み込んでいます…', emptyTitle: '最初のタグを作る', emptyBody: 'エアコンの掃除や浄水器の交換など、「最後にいつやったか」を残したい物を登録します。', createFirst: '最初のタグを作る',
-          itemsTitle: '記録するもの', itemsCount: '{count}件をこのブラウザーに保存', itemsFilteredCount: '{total}件中 {count}件を表示', newTag: '新しいタグ', homeOverviewLabel: 'ホームの概要', overdueItems: '目安超過', dueTodayItems: '今日が目安', recentWeekRecords: '7日以内の記録', searchItems: '検索', searchItemsPlaceholder: '名前・記録内容・メモ', sortItems: '並び順', sortPriority: '目安優先', sortRecent: '最近記録した順', sortUpdated: '最近更新した順', sortName: '名前順', noMatchingItems: '一致するアイテムがありません', noMatchingItemsBody: '検索語を変えると、保存済みのアイテムを再表示できます。', recentRecordsTitle: '最近の記録', recentRecordsBody: 'このブラウザーに保存した直近5件です。', localCardTitle: '記録の保存先', localCardBody: '名前や履歴はこのブラウザーに保存され、アプリからサーバーへ送信されません。', scopeCardTitle: '記録を残しておくには', scopeCardBody: 'ブラウザーのデータを消すと記録が失われることがあります。必要な記録はJSONで保存してください。', dataManagementTitle: 'バックアップ・書き出し', dataManagementBody: '記録を書き出したり、別端末へ移すためのバックアップを保存・復元できます。', dataSavedHere: 'このブラウザーの記録', dataBackupTitle: '記録を保存', dataBackupDescription: 'アイテムと履歴をまとめて保存します。', dataRestoreTitle: 'バックアップを復元', dataRestoreDescription: '保存したJSONファイルから記録を戻します。', dataCsvTitle: '履歴をCSVで保存', dataCsvDescription: '表計算ソフトで確認したいときに。', dataFilenameOptions: '保存ファイル名を変更', dataDangerSummary: '記録をすべて削除', dataSummaryLabel: '保存データの概要', dataItems: 'アイテム', dataEvents: '履歴', exportCsv: 'CSVを保存', exportJson: 'バックアップを保存', restoreJson: 'ファイルを選択', dataExportNote: 'CSVは履歴確認用です。記録を移すにはJSONバックアップを使ってください。', deleteAllTitle: 'このブラウザーの記録を削除', deleteAllBody: 'アイテムと履歴を削除します。元に戻せません。', deleteAllData: 'すべて削除', csvSaved: '履歴CSVを保存しました', jsonSaved: 'JSONバックアップを保存しました', noHistoryForCsv: 'CSVへ書き出す履歴がありません。', backupExportFailed: 'バックアップを書き出せませんでした。', restoreFileInvalid: 'このバックアップを読み込めません。ファイル形式か内容を確認してください。', restoreFileTooLarge: 'バックアップファイルが大きすぎます。25 MB以下のJSONを選んでください。', restoreDialogTitle: 'バックアップを復元', restoreSummaryLabel: 'バックアップの内容', restoreFileMeta: '{date} に書き出し', restoreModeTitle: '復元方法を選んでください。', restoreMergeTitle: '追加する', restoreMergeBody: '現在のデータを残して追加します。同じIDのアイテムと履歴は現在のデータを優先します。', restoreReplaceTitle: '置き換える', restoreReplaceBody: '現在のアイテムと履歴を削除して、このバックアップだけに置き換えます。', restoreAction: '復元する', restoreReplaceConfirmTitle: '現在の記録を置き換えますか？', restoreReplaceConfirmBody: 'このブラウザーの現在のアイテムと履歴を削除して、選択したバックアップに置き換えます。', restoreReplaceConfirm: '置き換える', restoreSucceeded: '{items}件のアイテム・{events}件の履歴を復元しました', restoreMerged: '追加しました：アイテム {items}件、履歴 {events}件', restoreFailed: 'バックアップを復元できませんでした。', restoreItemConflict: '同じIDで名前・作業内容・目安が異なるアイテムがあります。履歴を混ぜないため、追加を中止しました。別のブラウザーへ復元して内容を確認してください。', deleteAllConfirmTitle: 'すべての記録を削除しますか？', deleteAllConfirmBody: 'このブラウザーに保存したすべてのアイテムと履歴を削除します。この操作は元に戻せません。', deleteAllConfirm: 'すべて削除', allDataDeleted: 'すべてのアイテムと履歴を削除しました', deleteAllFailed: '記録を削除できませんでした。',
+          itemsTitle: '記録するもの', itemsCount: '{count}件をこのブラウザーに保存', itemsFilteredCount: '{total}件中 {count}件を表示', newTag: '新しいタグ', homeOverviewLabel: 'ホームの概要', overdueItems: '目安超過', dueTodayItems: '今日が目安', recentWeekRecords: '7日以内の記録', searchItems: '検索', searchItemsPlaceholder: '名前・記録内容・メモ', sortItems: '並び順', sortPriority: '目安優先', sortRecent: '最近記録した順', sortUpdated: '最近更新した順', sortName: '名前順', noMatchingItems: '一致するアイテムがありません', noMatchingItemsBody: '検索語を変えると、保存済みのアイテムを再表示できます。', recentRecordsTitle: '最近の記録', recentRecordsBody: 'このブラウザーに保存した直近5件です。', localCardTitle: '記録の保存先', localCardBody: '名前や履歴はこのブラウザーに保存され、アプリからサーバーへ送信されません。', scopeCardTitle: '記録を残しておくには', scopeCardBody: 'ブラウザーのデータを消すと記録が失われることがあります。必要な記録はJSONで保存してください。', dataManagementTitle: 'バックアップ・書き出し', dataManagementBody: '記録を書き出したり、別端末へ移すためのバックアップを保存・復元できます。', dataSavedHere: 'このブラウザーの記録', backupReminderTitle: 'バックアップの確認', backupReminderNoExport: '履歴が{count}件あります。JSONバックアップを書き出すと、別のブラウザーでも復元できます。', backupReminderNoExportAge: '最初の記録から30日以上経過しています。必要な記録はJSONバックアップで保存してください。', backupReminderNewRecords: '前回のJSONバックアップ書き出しから、履歴が{count}件増えました。', backupReminderElapsed: '前回のJSONバックアップ書き出しから30日以上経過しています。', backupReminderSave: 'バックアップを保存', backupReminderLater: 'あとで', backupReminderLaterTitle: '7日間非表示にします', dataBackupTitle: '記録を保存', dataBackupDescription: 'アイテムと履歴をまとめて保存します。', dataRestoreTitle: 'バックアップを復元', dataRestoreDescription: '保存したJSONファイルから記録を戻します。', dataCsvTitle: '履歴をCSVで保存', dataCsvDescription: '表計算ソフトで確認したいときに。', dataFilenameOptions: '保存ファイル名を変更', dataDangerSummary: '記録をすべて削除', dataSummaryLabel: '保存データの概要', dataItems: 'アイテム', dataEvents: '履歴', exportCsv: 'CSVを保存', exportJson: 'バックアップを保存', restoreJson: 'ファイルを選択', dataExportNote: 'CSVは履歴確認用です。記録を移すにはJSONバックアップを使ってください。', deleteAllTitle: 'このブラウザーの記録を削除', deleteAllBody: 'アイテムと履歴を削除します。元に戻せません。', deleteAllData: 'すべて削除', csvSaved: '履歴CSVを保存しました', jsonSaved: 'JSONバックアップを保存しました', noHistoryForCsv: 'CSVへ書き出す履歴がありません。', backupExportFailed: 'バックアップを書き出せませんでした。', restoreFileInvalid: 'このバックアップを読み込めません。ファイル形式か内容を確認してください。', restoreFileTooLarge: 'バックアップファイルが大きすぎます。25 MB以下のJSONを選んでください。', restoreDialogTitle: 'バックアップを復元', restoreSummaryLabel: 'バックアップの内容', restoreFileMeta: '{date} に書き出し', restoreModeTitle: '復元方法を選んでください。', restoreMergeTitle: '追加する', restoreMergeBody: '現在のデータを残して追加します。同じIDのアイテムと履歴は現在のデータを優先します。', restoreReplaceTitle: '置き換える', restoreReplaceBody: '現在のアイテムと履歴を削除して、このバックアップだけに置き換えます。', restoreAction: '復元する', restoreReplaceConfirmTitle: '現在の記録を置き換えますか？', restoreReplaceConfirmBody: 'このブラウザーの現在のアイテムと履歴を削除して、選択したバックアップに置き換えます。', restoreReplaceConfirm: '置き換える', restoreSucceeded: '{items}件のアイテム・{events}件の履歴を復元しました', restoreMerged: '追加しました：アイテム {items}件、履歴 {events}件', restoreFailed: 'バックアップを復元できませんでした。', restoreItemConflict: '同じIDで名前・作業内容・目安が異なるアイテムがあります。履歴を混ぜないため、追加を中止しました。別のブラウザーへ復元して内容を確認してください。', deleteAllConfirmTitle: 'すべての記録を削除しますか？', deleteAllConfirmBody: 'このブラウザーに保存したすべてのアイテムと履歴を削除します。この操作は元に戻せません。', deleteAllConfirm: 'すべて削除', allDataDeleted: 'すべてのアイテムと履歴を削除しました', deleteAllFailed: '記録を削除できませんでした。',
           createTitle: '新しいタグ', createBody: '1つの物と、そこで記録したい1つの行動を設定します。', back: '戻る', cancel: 'キャンセル', createTag: 'タグを作る', nameLabel: '名前', namePlaceholder: 'エアコンフィルター', nameHint: 'タグを開いたときに分かる短い名前がおすすめです。', actionLabel: '記録する内容', actionPlaceholder: '掃除した', actionHint: 'ボタンに「掃除したことを記録」のように表示されます。', intervalLabel: '目安', daysUnit: '日ごと（任意）', intervalHint: '目安値は詳細画面とタグURLに反映されます。', memoLabel: 'メモ', memoPlaceholder: 'リビング（任意）', memoHint: 'メモはこの端末だけに保存され、タグURLには入りません。', secretWarning: 'タグURLは秘密情報ではありません。パスワードや機密情報は入力しないでください。',
           requiredName: '名前を入力してください。', requiredAction: '記録する内容を入力してください。', invalidInterval: '目安は1〜3650日の整数で入力してください。', createFailed: 'アイテムを作成できませんでした。', created: 'タグを作成しました',
           backToList: '一覧へ', portableImported: 'タグURLからこの端末に追加しました', portableLocalPreferred: 'この端末で編集した情報を表示しています', lastRecord: '前回', elapsed: '前回から', recordCount: '記録回数', noRecord: 'まだ記録なし', today: '今日', daysAgo: '{count}日前', oneDayAgo: '1日前', countTimes: '{count}回', intervalValue: '目安 {count}日ごと', noInterval: '目安なし', suggestedTiming: '次の目安', statusNoInterval: '目安なし', statusNoIntervalNote: '必要なら「編集」から目安日数を設定できます。', statusNoRecord: 'まだ記録がありません', statusNoRecordNote: '最初の記録後に、次の目安を計算します。', statusInDays: 'あと{count}日', statusInOneDay: 'あと1日', statusDueToday: '今日が目安です', statusOverdue: '目安を{count}日過ぎています', statusFromLastRecord: '前回の記録から計算しています。',
@@ -2859,7 +2882,7 @@
           helpPrivacyTitle: 'Privacy', helpPrivacyBody: 'Items and history are stored in this browser and are not sent to a server by this app.', helpNotesTitle: 'Notes', helpNoteStorage: 'Clearing browser site data can remove your records. Use Data management to save a JSON backup of important records.', helpNoteSecret: 'Tag URLs are not secret. Do not put passwords or sensitive information in item/action fields.', helpNoteNfc: 'On a compatible Android browser, the HTTPS version can read and write NFC tags. On iPhone Safari or unsupported browsers, open a prepared URL tag through the OS or scan the QR code instead.', helpOffline: 'The distributed HTML uses no runtime CDN or external API. User record data is processed fully locally.',
           introTitle: 'Open work records with NFC or QR', lead: 'Check when you last cleaned or replaced something, then record the next job.', localBadge: 'Fully local processing',
           loading: 'Loading local records…', emptyTitle: 'Create your first tag', emptyBody: 'Register something where you want to remember the last cleaning, replacement, inspection, or similar action.', createFirst: 'Create first tag',
-          itemsTitle: 'Items', itemsCount: '{count} saved in this browser', itemsFilteredCount: 'Showing {count} of {total}', newTag: 'New tag', homeOverviewLabel: 'Home overview', overdueItems: 'Past interval', dueTodayItems: 'Suggested today', recentWeekRecords: 'Records in 7 days', searchItems: 'Search', searchItemsPlaceholder: 'Name, action, or memo', sortItems: 'Sort', sortPriority: 'Suggested timing', sortRecent: 'Recently recorded', sortUpdated: 'Recently updated', sortName: 'Name', noMatchingItems: 'No matching items', noMatchingItemsBody: 'Change the search text to show your saved items again.', recentRecordsTitle: 'Recent records', recentRecordsBody: 'The five most recent records saved in this browser.', localCardTitle: 'Where records are stored', localCardBody: 'Names and history are stored in this browser. The app does not upload them.', scopeCardTitle: 'Keep a copy of your records', scopeCardBody: 'Clearing browser data can erase records. Save a JSON backup when you need to keep them.', dataManagementTitle: 'Backup & export', dataManagementBody: 'Export records, or save and restore a backup when moving data to another browser or device.', dataSavedHere: 'Saved in this browser', dataBackupTitle: 'Save records', dataBackupDescription: 'Save all items and history in one file.', dataRestoreTitle: 'Restore a backup', dataRestoreDescription: 'Restore records from a saved JSON file.', dataCsvTitle: 'Export history as CSV', dataCsvDescription: 'For checking records in a spreadsheet.', dataFilenameOptions: 'Change download filenames', dataDangerSummary: 'Delete all records', dataSummaryLabel: 'Saved data summary', dataItems: 'Items', dataEvents: 'Records', exportCsv: 'Save CSV', exportJson: 'Save backup', restoreJson: 'Choose file', dataExportNote: 'CSV is for reviewing history. Use a JSON backup to move records.', deleteAllTitle: 'Delete records in this browser', deleteAllBody: 'Deletes items and history. This cannot be undone.', deleteAllData: 'Delete all', csvSaved: 'History CSV saved', jsonSaved: 'JSON backup saved', noHistoryForCsv: 'There is no history to export to CSV.', backupExportFailed: 'Could not export the backup.', restoreFileInvalid: 'Could not read this backup. Check the file format and contents.', restoreFileTooLarge: 'The backup file is too large. Choose a JSON file up to 25 MB.', restoreDialogTitle: 'Restore backup', restoreSummaryLabel: 'Backup contents', restoreFileMeta: 'Exported {date}', restoreModeTitle: 'Choose how to restore this backup.', restoreMergeTitle: 'Add to current data', restoreMergeBody: 'Keeps current data and adds new IDs. Current items and records win when an ID already exists.', restoreReplaceTitle: 'Replace current data', restoreReplaceBody: 'Deletes current items and history, then replaces them with this backup.', restoreAction: 'Restore', restoreReplaceConfirmTitle: 'Replace current records?', restoreReplaceConfirmBody: 'This deletes the items and history currently saved in this browser and replaces them with the selected backup.', restoreReplaceConfirm: 'Replace', restoreSucceeded: 'Restored {items} items and {events} records', restoreMerged: 'Added {items} items and {events} records', restoreFailed: 'Could not restore the backup.', restoreItemConflict: 'An item with the same ID has different name, action or interval settings. Nothing was added to avoid mixing histories. Restore in a separate browser to review the differences.', deleteAllConfirmTitle: 'Delete all records?', deleteAllConfirmBody: 'This deletes every item and history record saved in this browser. This action cannot be undone.', deleteAllConfirm: 'Delete all', allDataDeleted: 'All items and history deleted', deleteAllFailed: 'Could not delete the records.',
+          itemsTitle: 'Items', itemsCount: '{count} saved in this browser', itemsFilteredCount: 'Showing {count} of {total}', newTag: 'New tag', homeOverviewLabel: 'Home overview', overdueItems: 'Past interval', dueTodayItems: 'Suggested today', recentWeekRecords: 'Records in 7 days', searchItems: 'Search', searchItemsPlaceholder: 'Name, action, or memo', sortItems: 'Sort', sortPriority: 'Suggested timing', sortRecent: 'Recently recorded', sortUpdated: 'Recently updated', sortName: 'Name', noMatchingItems: 'No matching items', noMatchingItemsBody: 'Change the search text to show your saved items again.', recentRecordsTitle: 'Recent records', recentRecordsBody: 'The five most recent records saved in this browser.', localCardTitle: 'Where records are stored', localCardBody: 'Names and history are stored in this browser. The app does not upload them.', scopeCardTitle: 'Keep a copy of your records', scopeCardBody: 'Clearing browser data can erase records. Save a JSON backup when you need to keep them.', dataManagementTitle: 'Backup & export', dataManagementBody: 'Export records, or save and restore a backup when moving data to another browser or device.', dataSavedHere: 'Saved in this browser', backupReminderTitle: 'Backup check', backupReminderNoExport: 'There are {count} records. A JSON backup lets you restore them in another browser.', backupReminderNoExportAge: 'It has been over 30 days since the first record. Save a JSON backup if you need to keep the data.', backupReminderNewRecords: '{count} records have been added since your last JSON backup download.', backupReminderElapsed: 'More than 30 days have passed since your last JSON backup download.', backupReminderSave: 'Save backup', backupReminderLater: 'Later', backupReminderLaterTitle: 'Hide for 7 days', dataBackupTitle: 'Save records', dataBackupDescription: 'Save all items and history in one file.', dataRestoreTitle: 'Restore a backup', dataRestoreDescription: 'Restore records from a saved JSON file.', dataCsvTitle: 'Export history as CSV', dataCsvDescription: 'For checking records in a spreadsheet.', dataFilenameOptions: 'Change download filenames', dataDangerSummary: 'Delete all records', dataSummaryLabel: 'Saved data summary', dataItems: 'Items', dataEvents: 'Records', exportCsv: 'Save CSV', exportJson: 'Save backup', restoreJson: 'Choose file', dataExportNote: 'CSV is for reviewing history. Use a JSON backup to move records.', deleteAllTitle: 'Delete records in this browser', deleteAllBody: 'Deletes items and history. This cannot be undone.', deleteAllData: 'Delete all', csvSaved: 'History CSV saved', jsonSaved: 'JSON backup saved', noHistoryForCsv: 'There is no history to export to CSV.', backupExportFailed: 'Could not export the backup.', restoreFileInvalid: 'Could not read this backup. Check the file format and contents.', restoreFileTooLarge: 'The backup file is too large. Choose a JSON file up to 25 MB.', restoreDialogTitle: 'Restore backup', restoreSummaryLabel: 'Backup contents', restoreFileMeta: 'Exported {date}', restoreModeTitle: 'Choose how to restore this backup.', restoreMergeTitle: 'Add to current data', restoreMergeBody: 'Keeps current data and adds new IDs. Current items and records win when an ID already exists.', restoreReplaceTitle: 'Replace current data', restoreReplaceBody: 'Deletes current items and history, then replaces them with this backup.', restoreAction: 'Restore', restoreReplaceConfirmTitle: 'Replace current records?', restoreReplaceConfirmBody: 'This deletes the items and history currently saved in this browser and replaces them with the selected backup.', restoreReplaceConfirm: 'Replace', restoreSucceeded: 'Restored {items} items and {events} records', restoreMerged: 'Added {items} items and {events} records', restoreFailed: 'Could not restore the backup.', restoreItemConflict: 'An item with the same ID has different name, action or interval settings. Nothing was added to avoid mixing histories. Restore in a separate browser to review the differences.', deleteAllConfirmTitle: 'Delete all records?', deleteAllConfirmBody: 'This deletes every item and history record saved in this browser. This action cannot be undone.', deleteAllConfirm: 'Delete all', allDataDeleted: 'All items and history deleted', deleteAllFailed: 'Could not delete the records.',
           createTitle: 'New tag', createBody: 'Set one physical item and one action to record there.', back: 'Back', cancel: 'Cancel', createTag: 'Create tag', nameLabel: 'Name', namePlaceholder: 'Air conditioner filter', nameHint: 'Use a short name that is easy to recognize when the tag opens.', actionLabel: 'Action to record', actionPlaceholder: 'Cleaned', actionHint: 'The button will say something like “Record Cleaned”.', intervalLabel: 'Suggested interval', daysUnit: 'days (optional)', intervalHint: 'This value appears on the detail screen and in the tag URL.', memoLabel: 'Memo', memoPlaceholder: 'Living room (optional)', memoHint: 'The memo stays only on this device and is not included in the tag URL.', secretWarning: 'The tag URL is not secret. Do not enter passwords or sensitive information.',
           requiredName: 'Enter a name.', requiredAction: 'Enter an action.', invalidInterval: 'Enter an integer from 1 to 3650 days.', createFailed: 'Could not create the item.', created: 'Tag created',
           backToList: 'Items', portableImported: 'Added to this browser from a tag URL', portableLocalPreferred: 'Showing information edited in this browser', lastRecord: 'Last record', elapsed: 'Elapsed', recordCount: 'Records', noRecord: 'No records yet', today: 'Today', daysAgo: '{count} days ago', oneDayAgo: '1 day ago', countTimes: '{count}', intervalValue: 'Every {count} days', noInterval: 'No interval', suggestedTiming: 'Suggested timing', statusNoInterval: 'No interval', statusNoIntervalNote: 'Set an interval from Edit if you want timing guidance.', statusNoRecord: 'No records yet', statusNoRecordNote: 'The next suggested time will be calculated after the first record.', statusInDays: '{count} days to go', statusInOneDay: '1 day to go', statusDueToday: 'Today is the suggested time', statusOverdue: '{count} days past the suggested interval', statusFromLastRecord: 'Calculated from the latest record.',
@@ -2879,7 +2902,11 @@
       };
 
       const $ = selector => document.querySelector(selector);
-      const storageKeys = { language: `${APP_CONFIG.slug}:language`, homeSort: `${APP_CONFIG.slug}:home-sort` };
+      const storageKeys = { language: `${APP_CONFIG.slug}:language`, homeSort: `${APP_CONFIG.slug}:home-sort`, backupReminder: `${APP_CONFIG.slug}:backup-reminder` };
+      const BACKUP_REMINDER_DAYS = 30;
+      const BACKUP_REMINDER_EVENTS = 10;
+      const BACKUP_REMINDER_SNOOZE_DAYS = 7;
+      const MS_PER_DAY = 86400000;
       const DB_NAME = `${APP_CONFIG.slug}:db`;
       const DB_VERSION = 1;
       const ITEM_NAME_MAX = 60;
@@ -2896,6 +2923,7 @@
       let homeSortMode = readStorage(storageKeys.homeSort) || 'priority';
       if (!['priority', 'recent', 'updated', 'name'].includes(homeSortMode)) homeSortMode = 'priority';
       let homeSnapshot = { items: [], events: [] };
+      let backupReminderDismissedThisSession = false;
       let pendingRestore = null;
       let restoreGeneration = 0;
       let restoreBusy = false;
@@ -2921,6 +2949,56 @@
 
       function readStorage(key) { try { return localStorage.getItem(key); } catch { return null; } }
       function writeStorage(key, value) { try { localStorage.setItem(key, value); } catch { /* optional preference only */ } }
+      function readBackupReminderState() {
+        try {
+          const raw = readStorage(storageKeys.backupReminder);
+          const data = raw ? JSON.parse(raw) : {};
+          if (!data || typeof data !== 'object' || Array.isArray(data)) return {};
+          return {
+            lastExportAt: Number.isFinite(data.lastExportAt) && data.lastExportAt > 0 ? data.lastExportAt : 0,
+            eventCountAtExport: Number.isInteger(data.eventCountAtExport) && data.eventCountAtExport >= 0 ? data.eventCountAtExport : 0,
+            snoozedUntil: Number.isFinite(data.snoozedUntil) && data.snoozedUntil > 0 ? data.snoozedUntil : 0
+          };
+        } catch { return {}; }
+      }
+      function getBackupReminderStatus(events, now = Date.now()) {
+        if (!events.length || backupReminderDismissedThisSession) return null;
+        const state = readBackupReminderState();
+        if (now < (state.snoozedUntil || 0)) return null;
+        if (state.lastExportAt) {
+          const count = Math.max(0, events.length - state.eventCountAtExport);
+          if (count >= BACKUP_REMINDER_EVENTS) return { key: 'backupReminderNewRecords', count };
+          if (now - state.lastExportAt >= BACKUP_REMINDER_DAYS * MS_PER_DAY) return { key: 'backupReminderElapsed' };
+          return null;
+        }
+        if (events.length >= BACKUP_REMINDER_EVENTS) return { key: 'backupReminderNoExport', count: events.length };
+        let oldest = Infinity;
+        for (const event of events) {
+          const created = Date.parse(event.createdAt || event.performedAt || '');
+          if (Number.isFinite(created) && created <= now) oldest = Math.min(oldest, created);
+        }
+        if (oldest !== Infinity && now - oldest >= BACKUP_REMINDER_DAYS * MS_PER_DAY) return { key: 'backupReminderNoExportAge' };
+        return null;
+      }
+      function renderBackupReminder(events) {
+        const status = getBackupReminderStatus(events);
+        const reminder = $('#backupReminder');
+        reminder.hidden = !status;
+        if (status) $('#backupReminderText').textContent = tr(status.key, { count: status.count || 0 });
+      }
+      function snoozeBackupReminder() {
+        const state = readBackupReminderState();
+        backupReminderDismissedThisSession = true;
+        writeStorage(storageKeys.backupReminder, JSON.stringify({ ...state, snoozedUntil: Date.now() + BACKUP_REMINDER_SNOOZE_DAYS * MS_PER_DAY }));
+        renderBackupReminder(homeSnapshot.events);
+      }
+      function markBackupDownloadInitiated(eventCount) {
+        // Browsers cannot confirm that a user ultimately kept the download.
+        // Only a requested JSON download is recorded here.
+        backupReminderDismissedThisSession = false;
+        writeStorage(storageKeys.backupReminder, JSON.stringify({ lastExportAt: Date.now(), eventCountAtExport: eventCount, snoozedUntil: 0 }));
+        renderBackupReminder(homeSnapshot.events);
+      }
       function detectLanguage() {
         if (APP_CONFIG.defaultLanguage === 'ja' || APP_CONFIG.defaultLanguage === 'en') return APP_CONFIG.defaultLanguage;
         return (navigator.language || '').toLowerCase().startsWith('ja') ? 'ja' : 'en';
@@ -3255,6 +3333,7 @@
         const items = [...homeSnapshot.items];
         const events = [...homeSnapshot.events];
         renderDataManagementSnapshot(items, events);
+        renderBackupReminder(events);
         const latestByItem = new Map();
         for (const event of events) if (!latestByItem.has(event.itemId)) latestByItem.set(event.itemId, event);
         const itemMap = new Map(items.map(item => [item.id, item]));
@@ -3832,6 +3911,7 @@
           const [items, events] = await Promise.all([getAllItems(), getAllEvents()]);
           const text = JSON.stringify(createBackupDocument(items, events), null, 2) + '\n';
           downloadBlob(new Blob([text], { type: 'application/json;charset=utf-8' }), safeExportFilename($('#jsonFilename').value, 'json', 'nfc-tap-log-backup'));
+          markBackupDownloadInitiated(events.length);
           showToast(tr('jsonSaved'), { tone: 'success' });
         } catch (error) { console.error('JSON backup failed', error); showToast(tr('backupExportFailed'), { tone: 'warning' }); }
       }
@@ -3932,7 +4012,13 @@
         if (!homeSnapshot.items.length && !homeSnapshot.events.length) return;
         const confirmed = await AppConfirm.ask({ title: tr('deleteAllConfirmTitle'), message: tr('deleteAllConfirmBody'), confirmLabel: tr('deleteAllConfirm'), tone: 'danger' });
         if (!confirmed) return;
-        try { await clearAllRecords(); currentItem = null; currentItemId = null; currentEvents = []; homeSearchQuery = ''; await refreshHomeSummary(); showToast(tr('allDataDeleted'), { tone: 'success' }); }
+        try {
+          await clearAllRecords(); currentItem = null; currentItemId = null; currentEvents = []; homeSearchQuery = '';
+          // The old backup baseline does not apply to new records after a reset.
+          backupReminderDismissedThisSession = false;
+          writeStorage(storageKeys.backupReminder, '{}');
+          await refreshHomeSummary(); showToast(tr('allDataDeleted'), { tone: 'success' });
+        }
         catch (error) { console.error('Delete all failed', error); showToast(tr('deleteAllFailed'), { tone: 'warning' }); }
       }
       async function saveQrCode() {
@@ -4001,6 +4087,8 @@
         $('#itemSortSelect').addEventListener('change', event => { homeSortMode = event.currentTarget.value; writeStorage(storageKeys.homeSort, homeSortMode); renderHomeSnapshot(); });
         $('#exportCsvButton').addEventListener('click', exportHistoryCsv);
         $('#exportJsonButton').addEventListener('click', exportJsonBackup);
+        $('#backupReminderSaveButton').addEventListener('click', exportJsonBackup);
+        $('#backupReminderLaterButton').addEventListener('click', snoozeBackupReminder);
         $('#restoreJsonButton').addEventListener('click', () => { const input = $('#restoreFileInput'); input.value = ''; input.click(); });
         $('#restoreFileInput').addEventListener('change', event => { const file = event.currentTarget.files?.[0] || null; event.currentTarget.value = ''; if (file) loadRestoreFile(file); });
         $('#deleteAllDataButton').addEventListener('click', deleteAllData);
