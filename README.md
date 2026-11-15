@@ -165,6 +165,10 @@ Licensed under the [MIT License](LICENSE).
 
 ## v1.0.3 history integrity and tag URL fixes
 
+- The local-processing badge is hidden on phone layouts and the hero explains the workflow more directly.
+- Data management prioritizes backup and restore, keeps CSV export separate, and collapses filename customization and permanent deletion until requested. Delete confirmation remains intact.
+- Merging this PR into `main` triggers creation of the `v1.0.3` tag and GitHub Release if not already present. Both standalone HTML variants are attached to the release.
+
 - New records preserve the item name and action at the time they were logged, so later edits do not rewrite CSV history. Existing legacy records receive their previous labels when the item is first edited after upgrading; previously lost labels cannot be recovered.
 - Adding a record and updating its item's timestamp now use one IndexedDB transaction.
 - Merge restore stops without writing if an existing item ID has different name, action, or interval settings. Older JSON backups remain supported.
