@@ -556,6 +556,7 @@
     .data-summary-card strong { font-size: 14px; line-height: 1.3; font-variant-numeric: tabular-nums; }
     .data-summary-card span { color: var(--muted); font-size: 12px; }
     .data-main-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 17px 0; }
+    #dataManagementPanel[data-empty="true"] .data-main-actions { grid-template-columns: minmax(0, 1fr); max-width: 480px; }
     .data-task { display: flex; flex-direction: column; gap: 9px; min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: 13px; background: #fbfcfa; }
     .data-task-heading { display: flex; align-items: center; gap: 10px; }
     .data-task-icon { display: grid; place-items: center; flex: 0 0 36px; width: 36px; height: 36px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); }
@@ -999,7 +1000,7 @@
             </div>
           </div>
           <div class="data-main-actions">
-            <div class="data-task">
+            <div class="data-task" id="dataBackupTask">
               <div class="data-task-heading">
                 <span class="data-task-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-4-4 4 4 4-4M4 17v3h16v-3"/></svg></span>
                 <strong data-i18n="dataBackupTitle">記録を保存</strong>
@@ -1017,7 +1018,7 @@
               <input id="restoreFileInput" class="sr-only" type="file" accept="application/json,.json" tabindex="-1" aria-hidden="true">
             </div>
           </div>
-          <div class="data-csv-row">
+          <div class="data-csv-row" id="dataCsvRow">
             <div><strong data-i18n="dataCsvTitle">履歴をCSVで保存</strong><p data-i18n="dataCsvDescription">表計算ソフトで確認したいときに。</p></div>
             <button class="button secondary" id="exportCsvButton" type="button" data-i18n="exportCsv">CSVを保存</button>
           </div>
@@ -3234,11 +3235,21 @@
         return row;
       }
       function renderDataManagementSnapshot(items, events) {
+        const isEmpty = items.length === 0 && events.length === 0;
         $('#dataItemCount').textContent = String(items.length);
         $('#dataEventCount').textContent = String(events.length);
+        $('#dataManagementPanel').dataset.empty = String(isEmpty);
+        $('#dataBackupTask').hidden = isEmpty;
+        $('#dataCsvRow').hidden = events.length === 0;
+        $('#dataExportOptions').hidden = isEmpty;
+        $('#dataDangerDetails').hidden = isEmpty;
+        if (isEmpty) {
+          $('#dataExportOptions').open = false;
+          $('#dataDangerDetails').open = false;
+        }
         $('#exportCsvButton').disabled = events.length === 0;
-        $('#exportJsonButton').disabled = items.length === 0 && events.length === 0;
-        $('#deleteAllDataButton').disabled = items.length === 0 && events.length === 0;
+        $('#exportJsonButton').disabled = isEmpty;
+        $('#deleteAllDataButton').disabled = isEmpty;
       }
       function renderHomeSnapshot() {
         const items = [...homeSnapshot.items];
